@@ -1,0 +1,70 @@
+# Version: 20260206000
+
+# ignore all files starting with .
+.*
+
+# ignore all files that start with ~
+~*
+
+# ignore OS generated files (Thumbs.db, ehthumbs.db)
+*.db
+
+# ignore log files and databases
+*.log
+*.sql
+*.sqlite
+
+# ignore compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.phar
+
+# ignore packaged files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# ignore environment variables
+*.env
+
+# ignore json file
+*.json
+
+# ignore composer auth.json
+auth.json
+
+# ignore folders
+/node_modules/
+/vendor/
+/vendor-prefixed/
+/vendor-bin/**/vendor/
+
+# dont ignore specific folders
+!.afl-extra
+!.agents
+!.claude
+!.codex
+!.github
+!.vscode
+
+# dont ignore specific file
+!.editorconfig
+!.gitignore
+!.gitattributes
+!.distignore
+!.phpcs.xml
+!.scoper.inc.php
+!composer.json
+!composer.lock
+!composer-sample.json
+!package.json
+!package-lock.json

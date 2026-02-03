@@ -1,0 +1,273 @@
+<?php
+namespace Appfromlab\Bob;
+
+/**
+ * Helper class for tools
+ */
+class Helper {
+
+	/**
+	 * Get file and folder paths
+	 *
+	 * @return array
+	 */
+	public static function getPaths() {
+
+		// assume this package is installed in plugin vendor folder.
+		$root_dir = dirname( dirname( __DIR__ ) ) . DIRECTORY_SEPARATOR;
+
+		$plugin_dir = dirname( dirname( $root_dir ) ) . DIRECTORY_SEPARATOR;
+
+		$output = array(
+			'composer.json'              => $plugin_dir . 'composer.json',
+			'composer.lock'              => $plugin_dir . 'composer.lock',
+			'root_dir'                   => $root_dir,
+			'template_dir'               => $root_dir . 'template' . DIRECTORY_SEPARATOR,
+			'plugin_dir'                 => $plugin_dir,
+			'plugin_file'                => '',
+			'plugin_extra_dir'           => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR,
+			'plugin_extra_config_dir'    => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR,
+			'plugin_extra_tools_dir'     => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR,
+			'plugin_extra_readme_dir'    => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'readme' . DIRECTORY_SEPARATOR,
+			'plugin_bin_dir'             => $plugin_dir . '.bin' . DIRECTORY_SEPARATOR,
+			'plugin_language_dir'        => $plugin_dir . 'languages' . DIRECTORY_SEPARATOR,
+			'plugin_readme_file'         => $plugin_dir . 'readme.txt',
+			'plugin_vendor_prefixed_dir' => $plugin_dir . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
+			'php_scoper_config_file'     => $plugin_dir . 'scoper.inc.php',
+		);
+
+		return $output;
+	}
+
+	/**
+	 * Get general plugin configuration
+	 *
+	 * @return array
+	 */
+	public static function getConfig() {
+
+		// check composer.json exists.
+		$paths = self::getPaths();
+
+		if ( file_exists( $paths['composer.json'] ) ) {
+			$composer = json_decode(
+				file_get_contents( $paths['composer.json'] ),
+				true
+			);
+		} else {
+			echo "ERROR: composer.json not found.\n";
+			exit( 1 );
+		}
+
+		if (
+			empty( $composer )
+			|| empty( $composer['extra']['appfromlab/bob']['plugin_folder_name'] )
+			|| empty( $composer['extra']['appfromlab/bob']['plugin_version_constant'] )
+		) {
+			echo "Composer.json ['extra']['appfromlab/bob'] not setup.\n";
+			exit( 1 );
+		}
+
+		$config          = $composer['extra']['appfromlab/bob'];
+		$config['paths'] = self::getPaths();
+
+		// generate path to main plugin file.
+		$config['paths']['plugin_file'] = $config['paths']['plugin'] . $config['plugin_folder_name'] . '.php';
+
+		// check if main plugin file exists.
+		if ( ! file_exists( $config['paths']['plugin_file'] ) ) {
+			echo "ERROR: Main plugin file not found: {$config['paths']['plugin_file']}\n";
+			exit( 1 );
+		}
+
+		return $config;
+	}
+
+	/**
+	 * Get the plugin header data in associative array
+	 */
+	public static function getPluginHeaders( $plugin_file ) {
+
+		$default_headers = array(
+			'Plugin Name'       => '',
+			'Plugin URI'        => '',
+			'Version'           => '',
+			'Description'       => '',
+			'Author'            => '',
+			'Author URI'        => '',
+			'Text Domain'       => '',
+			'Domain Path'       => '',
+			'Network'           => '',
+			'Requires at least' => '',
+			'Requires PHP'      => '',
+			'Update URI'        => '',
+			'Requires Plugins'  => '',
+			'License'           => '',
+			'License URI'       => '',
+			'Stable Tag'        => '',
+			'Tested up to'      => '',
+			'Tags'              => '',
+		);
+
+		$plugin_data = self::getFileData( $plugin_file, $default_headers );
+
+		if ( empty( $plugin_data['Stable Tag'] ) ) {
+			$plugin_data['Stable Tag'] = $plugin_data['Version'];
+		}
+
+		return $plugin_data;
+	}
+
+	/**
+	 * Extract File Header Data based on headers given
+	 */
+	public static function getFileData( $file, $headers ) {
+
+		// Pull only the first 8 KB of the file in.
+		$file_data = file_get_contents( $file, false, null, 0, 8 * 1024 );
+
+		if ( false === $file_data ) {
+			$file_data = '';
+		}
+
+		// Make sure we catch CR-only line endings.
+		$file_data = str_replace( "\r", "\n", $file_data );
+
+		if ( empty( $headers ) ) {
+			$headers = array();
+		}
+		foreach ( $headers as $field => $field_value ) {
+			if ( preg_match(
+				'/^(?:array(\t)*<\?php)?[\t\/*#@]*' . preg_quote( $field, '/' ) . ':(.*)$/mi',
+				$file_data,
+				$match
+			) && $match[1] ) {
+				$headers[ $field ] = trim( $match[1] );
+			} else {
+				$headers[ $field ] = '';
+			}
+		}
+
+		return $headers;
+	}
+
+	/**
+	 * Replace a file content based on regex pattern
+	 *
+	 * @param array $files_regex_pattern array( 'file_path' => array( 'regex_here', 'replace_with_value' ) ).
+	 * @return void
+	 */
+	public static function replaceFileContentWithRegex( $files_regex_pattern ) {
+
+		foreach ( $files_regex_pattern as $file => $replacements ) {
+			if ( ! file_exists( $file ) ) {
+				echo "ERROR: File not found: {$file}\n";
+				exit( 1 );
+			}
+
+			$existing_content = file_get_contents( $file );
+			$updated_content  = $existing_content;
+
+			if ( ! is_array( $replacements[0] ) ) {
+				$replacements = array( $replacements );
+			}
+
+			foreach ( $replacements as [$pattern, $replacement] ) {
+				$updated_content = preg_replace( $pattern, $replacement, $updated_content, -1, $count );
+
+				if ( $count === 0 ) {
+					echo "ERROR: No match for pattern in {$file}: {$pattern}\n";
+					exit( 1 );
+				} else {
+					echo $replacement . "\n";
+				}
+			}
+
+			if ( $updated_content !== $existing_content ) {
+				file_put_contents( $file, $updated_content );
+
+				echo "File Updated: {$file}\n\n";
+			}
+		}
+	}
+
+	/**
+	 * Safe file deletion check with security validation
+	 *
+	 * @param string $file_path Full file path to check.
+	 * @param string $base_file_name File name to verify against.
+	 * @param string $allowed_dir Optional: restrict deletion to this directory (prevents root drive deletion).
+	 * @return bool True only if file is safe to delete
+	 */
+	public static function safeToDelete( $file_path, $base_file_name = 'xxx.php', $allowed_dir = '' ) {
+
+		// Basic validation.
+		if ( empty( $allowed_dir ) || ! file_exists( $file_path ) || basename( $file_path ) !== $base_file_name ) {
+			return false;
+		}
+
+		// Prevent path traversal.
+		if ( false !== strpos( $file_path, '..' ) ) {
+			return false;
+		}
+
+		// Resolve real path to prevent symlink attacks.
+		$real_path = realpath( $file_path );
+
+		if ( false === $real_path ) {
+			return false;
+		}
+
+		// If allowed_dir is specified, verify file is within it.
+		if ( ! empty( $allowed_dir ) ) {
+			$allowed_real_path = realpath( $allowed_dir );
+
+			if ( false === $allowed_real_path ) {
+				return false;
+			}
+
+			// Ensure the file is within the allowed directory.
+			if ( 0 !== strpos( $real_path, $allowed_real_path ) ) {
+				return false;
+			}
+		}
+
+		// Prevent deletion of files in root directory.
+		$parent_dir = dirname( $real_path );
+
+		// Windows root drives: C:\, D:\, etc.
+		if ( preg_match( '/^[a-z]:\\$/i', $parent_dir ) ) {
+			return false;
+		}
+
+		// Unix/Linux/macOS root directory ( / ).
+		if ( '/' === $parent_dir ) {
+			return false;
+		}
+
+		$command = '';
+
+		if ( 'Windows' === PHP_OS_FAMILY ) {
+
+			if ( is_dir( $real_path ) ) {
+				$command = 'rmdir /s /q ' . escapeshellarg( $real_path );
+			} else {
+				$command = 'del ' . escapeshellarg( $real_path );
+			}
+		} elseif ( 'Darwin' === PHP_OS_FAMILY || 'Linux' === PHP_OS_FAMILY ) {
+
+			$command = 'rm -rf ' . escapeshellarg( $real_path );
+		}
+
+		$exit_code = 0;
+
+		if ( ! empty( $command ) ) {
+			passthru(
+				escapeshellcmd( $command ),
+				$exit_code
+			);
+		}
+
+		return $exit_code ? false : true;
+	}
+}
