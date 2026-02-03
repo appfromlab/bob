@@ -1,0 +1,11 @@
+{
+	"extra": {
+		"appfromlab/bob": {
+			"plugin_folder_name": "",
+			"plugin_version_constant": ""
+		}
+	},
+	"scripts": {
+
+	}
+}

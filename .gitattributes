@@ -1,0 +1,21 @@
+# Version: 20260125000
+# Remove files for archives generated using `git archive`.
+
+# Directories
+/.*                             export-ignore
+/docs                           export-ignore
+/vendor                         export-ignore
+/vendor-bin                     export-ignore
+/vendor-bin/**/composer.lock    binary
+
+# Files
+/*.xml                          export-ignore
+/README.md                      export-ignore
+/scoper.inc.php                 export-ignore
+/composer.json                  export-ignore
+/composer.lock                  export-ignore
+/package.json                   export-ignore
+/package-lock.json              export-ignore
+
+# Auto detect text files and perform LF normalization
+* text=auto
