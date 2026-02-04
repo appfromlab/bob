@@ -1,18 +1,18 @@
 <?php
-namespace Appfromlab\Bob\Tools;
+namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Command\BaseCommand;
 
 /**
  * Delete vendor-prefixed directory
  */
-class DeleteVendorPrefixed extends Command {
+class DeleteVendorPrefixedCommand extends BaseCommand {
 
 	protected function configure(): void {
-		$this->setName( 'Delete vendor-prefixed folder' )
+		$this->setName( 'afl:delete-vendor-prefixed' )
 			->setDescription( 'Delete vendor-prefixed folder in the WordPress plugin folder.' );
 	}
 

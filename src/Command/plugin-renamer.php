@@ -1,18 +1,18 @@
 <?php
-namespace Appfromlab\Bob\Tools;
+namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Command\BaseCommand;
 
 /**
  * Rename a plugin
  */
-class PluginRenamer extends Command {
+class PluginRenamerCommand extends BaseCommand {
 
 	protected function configure(): void {
-		$this->setName( 'WordPress Plugin Renamer' )
+		$this->setName( 'afl:plugin-renamer' )
 			->setDescription( 'Rename a plugin using the plugin renamer config file.' );
 	}
 
@@ -23,7 +23,7 @@ class PluginRenamer extends Command {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( "\n<info>------ START " . __CLASS__ . "</info>\n" );
+		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
 		$config = Helper::getConfig();
 
@@ -157,7 +157,7 @@ class PluginRenamer extends Command {
 
 				file_put_contents( $file, $updated_content );
 
-				$output->writeln( "File Updated: {$file}\n" );
+				$output->writeln( "File Updated: {$file}" );
 
 				$has_any_file_updated = true;
 			}
@@ -185,9 +185,9 @@ class PluginRenamer extends Command {
 
 		rename( $boilerplate_plugin_file_path, $new_plugin_file_path );
 
-		$output->writeln( "Main plugin file was renamed to {$new_plugin_file_name}.php\n" );
+		$output->writeln( "Main plugin file was renamed to {$new_plugin_file_name}.php" );
 
-		$output->writeln( "\n<info>------ END " . __CLASS__ . "</info>\n" );
+		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
 
 		return 0;
 	}

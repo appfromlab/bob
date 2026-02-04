@@ -8,7 +8,7 @@ use Composer\Command\BaseCommand;
 class HelloCommand extends BaseCommand {
 
 	protected function configure(): void {
-		$this->setName( 'afl-bob:hello' )
+		$this->setName( 'afl:hello' )
 			->setDescription( 'Say hello' );
 	}
 

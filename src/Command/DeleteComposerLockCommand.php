@@ -1,18 +1,18 @@
 <?php
-namespace Appfromlab\Bob\Tools;
+namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Command\BaseCommand;
 
 /**
  * Delete composer.lock file
  */
-class DeleteComposerLock extends Command {
+class DeleteComposerLockCommand extends BaseCommand {
 
 	protected function configure(): void {
-		$this->setName( 'Delete composer.lock file' )
+		$this->setName( 'afl:delete-composer-lock' )
 			->setDescription( 'Delete composer.lock file in the WordPress plugin folder.' );
 	}
 

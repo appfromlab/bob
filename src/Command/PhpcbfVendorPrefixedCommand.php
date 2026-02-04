@@ -1,19 +1,19 @@
 <?php
-namespace Appfromlab\Bob\Tools;
+namespace Appfromlab\Bob\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Command\BaseCommand;
 
 /**
  * Beautify the vendor-prefixed composer folder
  *
  * Force success on exit because it will fail for Github Action.
  */
-class PhpcbfVendorPrefixed extends Command {
+class PhpcbfVendorPrefixedCommand extends BaseCommand {
 
 	protected function configure(): void {
-		$this->setName( 'Beautify vendor-prefixed folder.' )
+		$this->setName( 'afl:phpcbf-vendor-prefixed' )
 			->setDescription( 'Beautify vendor-prefixed composer folder.' );
 	}
 

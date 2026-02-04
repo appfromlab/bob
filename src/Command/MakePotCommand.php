@@ -1,18 +1,18 @@
 <?php
-namespace Appfromlab\Bob\Tools;
+namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Command\BaseCommand;
 
 /**
  * Make Language POT File
  */
-class MakePot extends Command {
+class MakePotCommand extends BaseCommand {
 
 	protected function configure(): void {
-		$this->setName( 'Make .pot' )
+		$this->setName( 'afl:make-pot' )
 			->setDescription( 'Generate the plugin language POT file' );
 	}
 
@@ -23,7 +23,7 @@ class MakePot extends Command {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( "\n<info>------ START " . __CLASS__ . "</info>\n" );
+		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
 		// Get configuration from composer.json.
 		$config = Helper::getConfig();
@@ -66,7 +66,7 @@ class MakePot extends Command {
 			return $return_code;
 		}
 
-		$output->writeln( "\n<info>------ END " . __CLASS__ . "</info>\n" );
+		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
 
 		return 0;
 	}
