@@ -1,10 +1,10 @@
 <?php
-namespace Appfromlab\Bob\Tools;
+namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Command\BaseCommand;
 
 /**
  * Plugin readme.txt generator
@@ -12,21 +12,21 @@ use Symfony\Component\Console\Output\OutputInterface;
  * It will compile a WordPress plugin readme.txt file using
  * the plugin headers data and content in .plugin-readme folder.
  */
-class ReadmeGenerator extends Command {
+class ReadmeGeneratorCommand extends BaseCommand {
 
 	protected function configure(): void {
-		$this->setName( 'WordPress Plugin Readme Generator' )
+		$this->setName( 'afl:readme-generator' )
 			->setDescription( 'Generate plugin readme.txt based from individual files from the plugin .plugin-readme folder.' );
 	}
 
 	/**
-	 * Run the readme generator process
+	 * Execute the command
 	 *
 	 * @return int
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( "\n<info>------ START " . __CLASS__ . "</info>\n" );
+		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
 		$config = Helper::getConfig();
 
@@ -108,7 +108,7 @@ class ReadmeGenerator extends Command {
 			$output->writeln( '<error>ERROR: readme.txt not found.</error>' );
 		}
 
-		$output->writeln( "\n<info>------ END " . __CLASS__ . "</info>\n" );
+		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
 
 		return 0;
 	}

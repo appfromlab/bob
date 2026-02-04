@@ -1,10 +1,10 @@
 <?php
-namespace Appfromlab\Bob\Tools;
+namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Command\BaseCommand;
 
 /**
  * Bump Plugin Version
@@ -12,21 +12,21 @@ use Symfony\Component\Console\Output\OutputInterface;
  * It will update the version number in the main plugin file and readme.txt
  * based on the configuration in composer.json.
  */
-class BumpVersion extends Command {
+class BumpVersionCommand extends BaseCommand {
 
 	protected function configure(): void {
-		$this->setName( 'Bump Version' )
-			->setDescription( 'Bump plugin version from composer.json' );
+		$this->setName( 'afl:bump-version' )
+			->setDescription( 'Bump plugin version using value from plugin header.' );
 	}
 
 	/**
-	 * Execute the bump version process
+	 * Execute the command
 	 *
 	 * @return int
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( "\n<info>------ START " . __CLASS__ . "</info>\n" );
+		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
 		$config = Helper::getConfig();
 
@@ -34,7 +34,7 @@ class BumpVersion extends Command {
 
 		$output->writeln( "Bump Plugin Version to: {$plugin_headers['Version']}" );
 		$output->writeln( "Plugin File: {$config['paths']['plugin_file']}" );
-		$output->writeln( "Plugin Version Constant: {$config['plugin_version_constant']}\n" );
+		$output->writeln( "Plugin Version Constant: {$config['plugin_version_constant']}" );
 
 		$files_regex_pattern = array(
 			$config['paths']['plugin_file'] => array(
@@ -52,7 +52,7 @@ class BumpVersion extends Command {
 			include_once $custom_config_file_path;
 		}
 
-		$output->writeln( "\n<info>------ END " . __CLASS__ . "</info>\n" );
+		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
 
 		return 0;
 	}

@@ -23,7 +23,8 @@
         "class": "Appfromlab\\Bob\\Composer\\BobPlugin"
     },
     "require": {
-        "composer-plugin-api": "^2.9.0"
+        "composer-plugin-api": "^2.9.0",
+        "symfony/process": "^8.0.5"
     },
     "require-dev": {
         "composer/composer": "2.9.5"

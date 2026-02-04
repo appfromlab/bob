@@ -1,30 +1,30 @@
 <?php
-namespace Appfromlab\Bob\Tools;
+namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Command\BaseCommand;
 
 /**
  * Copy the plugin-renamer-config.php to plugin root folder.
  * Rename it to .afl-plugin-renamer-config.php
  */
-class PluginRenamerCopyConfig extends Command {
+class PluginRenamerCopyConfigCommand extends BaseCommand {
 
 	protected function configure(): void {
-		$this->setName( 'Copy plugin renamer config file' )
+		$this->setName( 'afl:plugin-renamer-copy-config' )
 			->setDescription( 'Copy plugin renamer file to your WordPress plugin folder.' );
 	}
 
 	/**
-	 * Run the plugin renamer copy config process
+	 * Execute the command
 	 *
 	 * @return int
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( "\n<info>------ START " . __CLASS__ . "</info>\n" );
+		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
 		$config = Helper::getConfig();
 
@@ -51,7 +51,7 @@ class PluginRenamerCopyConfig extends Command {
 			$output->writeln( '<info>SUCCESS: You can now edit the .afl-extra/config/plugin-renamer-config.php</info>' );
 		}
 
-		$output->writeln( "\n<info>------ END " . __CLASS__ . "</info>\n" );
+		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
 
 		return 0;
 	}
