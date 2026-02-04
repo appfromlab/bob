@@ -1,20 +1,31 @@
 {
     "name": "appfromlab/bob",
     "description": "Composer tool to build WordPress plugin.",
-    "type": "library",
+    "type": "composer-plugin",
     "license": "GPL-3.0-only",
+    "authors": [
+        {
+            "name": "Appfromlab",
+            "homepage": "https://www.appfromlab.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Appfromlab\\Bob\\": "src/"
         }
     },
-    "authors": [
-        {
-            "name": "Appfromlab"
-        }
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "bin": [
+        "bin/afl-bob"
     ],
-    "minimum-stability": "stable",
+    "extra": {
+        "class": "Appfromlab\\Bob\\Composer\\BobPlugin"
+    },
+    "require": {
+        "composer-plugin-api": "^2.9.0"
+    },
     "require-dev": {
-        "symfony/console": "^5.4.47 || ^6.4.25 || ^7.1.10 || ^8.0"
+        "composer/composer": "2.9.5"
     }
 }
