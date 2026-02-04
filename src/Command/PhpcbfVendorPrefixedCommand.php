@@ -3,6 +3,7 @@ namespace Appfromlab\Bob\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
 
 /**
@@ -18,18 +19,31 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 	}
 
 	/**
-	 * Run the phpcbf vendor-prefixed process
+	 * Execute the command
 	 *
 	 * @return int
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		\passthru(
-			'php vendor/bin/phpcbf --standard=.phpcs.xml vendor-prefixed/composer vendor-prefixed/autoload.php',
-			$exit_code
+		$process = new Process(
+			array(
+				'php',
+				'vendor/bin/phpcbf',
+				'--standard=.phpcs.xml',
+				'vendor-prefixed/composer',
+				'vendor-prefixed/autoload.php',
+			)
 		);
 
-		// Always exit 0.
+		$output->writeln( 'Running: ' . $process->getCommandLine() );
+
+		$process->run(
+			function ( $type, $buffer ) use ( $output ) {
+				$output->write( $buffer );
+			}
+		);
+
+		// Always exit 0 (force success because it may fail for Github Action).
 		return 0;
 	}
 }

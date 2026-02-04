@@ -4,6 +4,7 @@ namespace Appfromlab\Bob\Command;
 use Appfromlab\Bob\Helper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
 
 /**
@@ -17,7 +18,7 @@ class MakePotCommand extends BaseCommand {
 	}
 
 	/**
-	 * Run the make pot process
+	 * Execute the command
 	 *
 	 * @return int
 	 */
@@ -47,23 +48,29 @@ class MakePotCommand extends BaseCommand {
 			return 1;
 		}
 
-		// Build command with escaped arguments.
-		$command = 'php ' . escapeshellarg( $config['plugin_bin_dir'] . 'wp-cli.phar' ) . ' i18n make-pot . languages/' . escapeshellarg( $config['plugin_folder_name'] . '.pot' );
+		// Build command with arguments.
+		$process = new Process(
+			array(
+				'php',
+				$config['plugin_bin_dir'] . 'wp-cli.phar',
+				'i18n',
+				'make-pot',
+				'.',
+				'languages/' . $config['plugin_folder_name'] . '.pot',
+			)
+		);
 
-		$output->writeln( 'Command: ' . $command );
+		$output->writeln( 'Running: ' . $process->getCommandLine() );
 
-		$command_output = array();
-		$return_code    = 0;
+		$process->run(
+			function ( $type, $buffer ) use ( $output ) {
+				$output->write( $buffer );
+			}
+		);
 
-		exec( escapeshellcmd( $command ), $command_output, $return_code );
-
-		foreach ( $command_output as $line ) {
-			$output->writeln( $line );
-		}
-
-		if ( 0 !== $return_code ) {
-			$output->writeln( '<error>ERROR: Failed to generate POT file (exit code: ' . $return_code . ')</error>' );
-			return $return_code;
+		if ( ! $process->isSuccessful() ) {
+			$output->writeln( '<error>ERROR: Failed to generate POT file</error>' );
+			return 1;
 		}
 
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
