@@ -17,7 +17,7 @@ class DeleteComposerLockCommand extends BaseCommand {
 	}
 
 	/**
-	 * Run the delete composer lock process
+	 * Execute the command
 	 *
 	 * @return int
 	 */

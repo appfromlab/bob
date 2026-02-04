@@ -17,7 +17,7 @@ class DeleteVendorPrefixedCommand extends BaseCommand {
 	}
 
 	/**
-	 * Run the delete vendor-prefixed process
+	 * Execute the command
 	 *
 	 * @return int
 	 */

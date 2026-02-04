@@ -20,7 +20,7 @@ class BumpVersionCommand extends BaseCommand {
 	}
 
 	/**
-	 * Execute the bump version process
+	 * Execute the command
 	 *
 	 * @return int
 	 */

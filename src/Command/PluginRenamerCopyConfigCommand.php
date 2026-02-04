@@ -18,7 +18,7 @@ class PluginRenamerCopyConfigCommand extends BaseCommand {
 	}
 
 	/**
-	 * Run the plugin renamer copy config process
+	 * Execute the command
 	 *
 	 * @return int
 	 */

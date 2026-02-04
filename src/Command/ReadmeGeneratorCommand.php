@@ -20,7 +20,7 @@ class ReadmeGeneratorCommand extends BaseCommand {
 	}
 
 	/**
-	 * Run the readme generator process
+	 * Execute the command
 	 *
 	 * @return int
 	 */
