@@ -17,7 +17,7 @@ class PluginRenamerCommand extends BaseCommand {
 	}
 
 	/**
-	 * Run the plugin renamer process
+	 * Execute the command
 	 *
 	 * @return int
 	 */
