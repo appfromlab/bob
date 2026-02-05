@@ -50,7 +50,7 @@ class Helper {
 		$output = array();
 
 		// assume this package is installed in plugin vendor folder.
-		$composer_plugin_dir = dirname( dirname( __DIR__ ) ) . DIRECTORY_SEPARATOR;
+		$composer_plugin_dir = dirname( __DIR__ ) . DIRECTORY_SEPARATOR;
 
 		// find the WordPress plugin composer.json.
 		$composer_json_file_path = self::findComposerJsonPath();
