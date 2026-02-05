@@ -7,34 +7,75 @@ namespace Appfromlab\Bob;
 class Helper {
 
 	/**
+	 * Find the composer.json path of the WordPress plugin
+	 *
+	 * @return string
+	 */
+	public static function findComposerJsonPath() {
+
+		$current_dir    = dirname( __DIR__ );
+		$max_iterations = 6;
+		$iteration      = 0;
+
+		// Traverse up the directory tree looking for composer.json.
+		while ( dirname( $current_dir ) !== $current_dir && $iteration < $max_iterations ) {
+
+			$composer_json_path = $current_dir . DIRECTORY_SEPARATOR . 'composer.json';
+
+			if ( file_exists( $composer_json_path ) ) {
+				$composer = json_decode( file_get_contents( $composer_json_path ), true );
+
+				// Check if this is the right composer.json with appfromlab/bob configuration.
+				if ( ! empty( $composer ) && ! empty( $composer['extra']['appfromlab/bob'] ) ) {
+					return $composer_json_path;
+				}
+			}
+
+			// Go up one directory.
+			$current_dir = dirname( $current_dir );
+
+			++$iteration;
+		}
+
+		return '';
+	}
+
+	/**
 	 * Get file and folder paths
 	 *
 	 * @return array
 	 */
-	public static function getPaths() {
+	private static function getPaths() {
+
+		$output = array();
 
 		// assume this package is installed in plugin vendor folder.
-		$root_dir = dirname( dirname( __DIR__ ) ) . DIRECTORY_SEPARATOR;
+		$composer_plugin_dir = dirname( dirname( __DIR__ ) ) . DIRECTORY_SEPARATOR;
 
-		$plugin_dir = dirname( dirname( $root_dir ) ) . DIRECTORY_SEPARATOR;
+		// find the WordPress plugin composer.json.
+		$composer_json_file_path = self::findComposerJsonPath();
 
-		$output = array(
-			'composer.json'              => $plugin_dir . 'composer.json',
-			'composer.lock'              => $plugin_dir . 'composer.lock',
-			'root_dir'                   => $root_dir,
-			'template_dir'               => $root_dir . 'template' . DIRECTORY_SEPARATOR,
-			'plugin_dir'                 => $plugin_dir,
-			'plugin_file'                => '',
-			'plugin_extra_dir'           => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR,
-			'plugin_extra_config_dir'    => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR,
-			'plugin_extra_tools_dir'     => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR,
-			'plugin_extra_readme_dir'    => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'readme' . DIRECTORY_SEPARATOR,
-			'plugin_bin_dir'             => $plugin_dir . '.bin' . DIRECTORY_SEPARATOR,
-			'plugin_language_dir'        => $plugin_dir . 'languages' . DIRECTORY_SEPARATOR,
-			'plugin_readme_file'         => $plugin_dir . 'readme.txt',
-			'plugin_vendor_prefixed_dir' => $plugin_dir . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
-			'php_scoper_config_file'     => $plugin_dir . 'scoper.inc.php',
-		);
+		if ( ! empty( $composer_json_file_path ) ) {
+			$plugin_dir = dirname( $composer_json_file_path ) . DIRECTORY_SEPARATOR;
+
+			$output = array(
+				'root_dir'                   => $composer_plugin_dir,
+				'template_dir'               => $composer_plugin_dir . 'template' . DIRECTORY_SEPARATOR,
+				'plugin_composer_file'       => $plugin_dir . 'composer.json',
+				'plugin_composer_lock_file'  => $plugin_dir . 'composer.lock',
+				'plugin_dir'                 => $plugin_dir,
+				'plugin_file'                => '',
+				'plugin_extra_dir'           => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR,
+				'plugin_extra_config_dir'    => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR,
+				'plugin_extra_tools_dir'     => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR,
+				'plugin_extra_readme_dir'    => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'readme' . DIRECTORY_SEPARATOR,
+				'plugin_bin_dir'             => $plugin_dir . '.bin' . DIRECTORY_SEPARATOR,
+				'plugin_language_dir'        => $plugin_dir . 'languages' . DIRECTORY_SEPARATOR,
+				'plugin_readme_file'         => $plugin_dir . 'readme.txt',
+				'plugin_vendor_prefixed_dir' => $plugin_dir . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
+				'php_scoper_config_file'     => $plugin_dir . 'scoper.inc.php',
+			);
+		}
 
 		return $output;
 	}
@@ -49,9 +90,9 @@ class Helper {
 		// check composer.json exists.
 		$paths = self::getPaths();
 
-		if ( file_exists( $paths['composer.json'] ) ) {
+		if ( ! empty( $paths['plugin_composer_file'] ) && file_exists( $paths['plugin_composer_file'] ) ) {
 			$composer = json_decode(
-				file_get_contents( $paths['composer.json'] ),
+				file_get_contents( $paths['plugin_composer_file'] ),
 				true
 			);
 		} else {
@@ -69,10 +110,10 @@ class Helper {
 		}
 
 		$config          = $composer['extra']['appfromlab/bob'];
-		$config['paths'] = self::getPaths();
+		$config['paths'] = $paths;
 
 		// generate path to main plugin file.
-		$config['paths']['plugin_file'] = $config['paths']['plugin'] . $config['plugin_folder_name'] . '.php';
+		$config['paths']['plugin_file'] = $config['paths']['plugin_dir'] . $config['plugin_folder_name'] . '.php';
 
 		// check if main plugin file exists.
 		if ( ! file_exists( $config['paths']['plugin_file'] ) ) {
