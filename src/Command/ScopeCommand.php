@@ -24,7 +24,11 @@ class ScopeCommand extends BaseCommand {
 
 		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
+		// Get configuration.
 		$config = Helper::getConfig();
+
+		// Change to parent directory to ensure correct paths.
+		chdir( $config['plugin_dir'] );
 
 		$process = new Process(
 			array(

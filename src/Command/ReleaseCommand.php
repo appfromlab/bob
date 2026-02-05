@@ -2,9 +2,11 @@
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
+use Appfromlab\Bob\Command\BumpVersionCommand;
+use Appfromlab\Bob\Command\MakePotCommand;
+use Appfromlab\Bob\Command\ReadmeGeneratorCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
 
 class ReleaseCommand extends BaseCommand {
@@ -26,25 +28,20 @@ class ReleaseCommand extends BaseCommand {
 		$config = Helper::getConfig();
 
 		$commands = array(
-			array( 'composer', 'afl:build' ),
-			array( 'composer', 'afl:bump-version' ),
-			array( 'composer', 'afl:readme-generator' ),
-			array( 'composer', 'afl:make-pot' ),
+			new BuildCommand(),
+			new BumpVersionCommand(),
+			new ReadmeGeneratorCommand(),
+			new MakePotCommand(),
 		);
 
-		foreach ( $commands as $command_args ) {
-			$process = new Process( $command_args );
+		foreach ( $commands as $command ) {
 
-			$output->writeln( '<info>Running: ' . $process->getCommandLine() . '</info>' );
+			$output->writeln( '' );
 
-			$process->run(
-				function ( $type, $buffer ) use ( $output ) {
-					$output->write( $buffer );
-				}
-			);
+			$return_code = $command->execute( $input, $output );
 
-			if ( ! $process->isSuccessful() ) {
-				$output->writeln( '<error>ERROR: Command failed - ' . $process->getCommandLine() . '</error>' );
+			if ( 0 !== $return_code ) {
+				$output->writeln( '<error>ERROR: Command failed - ' . $command->getName() . '</error>' );
 				return 1;
 			}
 		}
