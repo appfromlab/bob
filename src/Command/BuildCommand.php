@@ -23,30 +23,48 @@ class BuildCommand extends BaseCommand {
 
 		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
+		// Get configuration.
 		$config = Helper::getConfig();
+
+		// Change to parent directory to ensure correct paths.
+		chdir( $config['plugin_dir'] );
 
 		$commands = array(
 			array( 'composer', 'dump-autoload', '--no-dev' ),
-			array( 'composer', 'afl:delete-vendor-prefixed' ),
-			array( 'composer', 'afl:scope' ),
-			array( 'composer', 'afl:phpcbf-vendor-prefixed' ),
+			new DeleteVendorPrefixedCommand(),
+			new ScopeCommand(),
+			new PhpcbfVendorPrefixedCommand(),
 			array( 'composer', 'dump-autoload' ),
 		);
 
 		foreach ( $commands as $command_args ) {
-			$process = new Process( $command_args );
 
-			$output->writeln( '<info>Running: ' . $process->getCommandLine() . '</info>' );
+			if ( is_a( $command_args, BaseCommand::class ) ) {
 
-			$process->run(
-				function ( $type, $buffer ) use ( $output ) {
-					$output->write( $buffer );
+				$output->writeln( '' );
+
+				$return_code = $command_args->execute( $input, $output );
+
+				if ( 0 !== $return_code ) {
+					$output->writeln( '<error>ERROR: Command failed - ' . $command_args->getName() . '</error>' );
+					return 1;
 				}
-			);
+			} elseif ( is_array( $command_args ) ) {
 
-			if ( ! $process->isSuccessful() ) {
-				$output->writeln( '<error>ERROR: Command failed - ' . $process->getCommandLine() . '</error>' );
-				return 1;
+				$process = new Process( $command_args );
+
+				$output->writeln( '<info>Process: ' . $process->getCommandLine() . '</info>' );
+
+				$process->run(
+					function ( $type, $buffer ) use ( $output ) {
+						$output->write( $buffer );
+					}
+				);
+
+				if ( ! $process->isSuccessful() ) {
+					$output->writeln( '<error>ERROR: Command failed - ' . $process->getCommandLine() . '</error>' );
+					return 1;
+				}
 			}
 		}
 

@@ -1,6 +1,7 @@
 <?php
 namespace Appfromlab\Bob\Command;
 
+use Appfromlab\Bob\Helper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
@@ -25,6 +26,14 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
+		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+
+		// Get configuration.
+		$config = Helper::getConfig();
+
+		// Change to parent directory to ensure correct paths.
+		chdir( $config['plugin_dir'] );
+
 		$process = new Process(
 			array(
 				'php',
@@ -42,6 +51,8 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 				$output->write( $buffer );
 			}
 		);
+
+		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
 
 		// Always exit 0 (force success because it may fail for Github Action).
 		return 0;
