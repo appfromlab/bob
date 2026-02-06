@@ -33,6 +33,6 @@ return array(
 		'composer.json',
 		'readme.txt',
 		'.phpcs.xml',
-		'scoper.inc.php',
+		'.scoper.inc.php',
 	),
 );
