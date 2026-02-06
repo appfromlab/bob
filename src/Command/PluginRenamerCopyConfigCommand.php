@@ -51,7 +51,9 @@ class PluginRenamerCopyConfigCommand extends BaseCommand {
 			$output->writeln( '<info>SUCCESS: You can now edit the .afl-extra/config/plugin-renamer-config.php</info>' );
 		}
 
+		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		return 0;
 	}

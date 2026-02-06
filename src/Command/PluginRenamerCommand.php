@@ -187,7 +187,9 @@ class PluginRenamerCommand extends BaseCommand {
 
 		$output->writeln( "Main plugin file was renamed to {$new_plugin_file_name}.php" );
 
+		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		return 0;
 	}

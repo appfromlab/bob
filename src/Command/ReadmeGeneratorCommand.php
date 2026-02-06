@@ -108,7 +108,9 @@ class ReadmeGeneratorCommand extends BaseCommand {
 			$output->writeln( '<error>ERROR: readme.txt not found.</error>' );
 		}
 
+		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		return 0;
 	}

@@ -46,13 +46,15 @@ class BumpVersionCommand extends BaseCommand {
 		Helper::replaceFileContentWithRegex( $files_regex_pattern, $output );
 
 		// check for extra custom file from .afl-extra/tools folder.
-		$custom_config_file_path = $config['plugin_extra_tools_dir'] . 'bump-version-extra.php';
+		$custom_config_file_path = $config['paths']['plugin_extra_tools_dir'] . 'bump-version-extra.php';
 
 		if ( file_exists( $custom_config_file_path ) ) {
 			include_once $custom_config_file_path;
 		}
 
+		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		return 0;
 	}
