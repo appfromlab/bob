@@ -16,7 +16,7 @@ class ReadmeGeneratorCommand extends BaseCommand {
 
 	protected function configure(): void {
 		$this->setName( 'afl:readme-generator' )
-			->setDescription( 'Generate plugin readme.txt based from individual files from the plugin .plugin-readme folder.' );
+			->setDescription( 'Generate plugin readme.txt based from individual files from the .afl-extra/readme folder.' );
 	}
 
 	/**
