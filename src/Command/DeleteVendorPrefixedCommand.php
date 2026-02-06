@@ -23,6 +23,8 @@ class DeleteVendorPrefixedCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
+		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+
 		$config = Helper::getConfig();
 
 		if ( file_exists( $config['paths']['plugin_vendor_prefixed_dir'] ) ) {
@@ -31,6 +33,10 @@ class DeleteVendorPrefixedCommand extends BaseCommand {
 				$output->writeln( '<warning>WARNING: vendor-prefixed folder cannot be deleted.</warning>' );
 			}
 		}
+
+		$output->writeln( '' );
+		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		// can continue.
 		return 0;

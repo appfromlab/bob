@@ -26,19 +26,16 @@ class MakePotCommand extends BaseCommand {
 
 		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
-		// Get configuration
+		// Get configuration.
 		$config = Helper::getConfig();
 
-		// Change to parent directory to ensure correct paths.
-		chdir( $config['paths']['plugin_dir'] );
-
 		// Validate paths and configuration.
-		if ( ! file_exists( $config['plugin_bin_dir'] . 'wp-cli.phar' ) ) {
+		if ( ! file_exists( $config['paths']['plugin_bin_dir'] . 'wp-cli.phar' ) ) {
 			$output->writeln( '<error>ERROR: WP-CLI PHAR file not found at ./.bin/wp-cli.phar</error>' );
 			return 1;
 		}
 
-		if ( ! is_dir( $config['plugin_language_dir'] ) ) {
+		if ( ! is_dir( $config['paths']['plugin_language_dir'] ) ) {
 			$output->writeln( '<error>ERROR: languages directory not found.</error>' );
 			return 1;
 		}
@@ -52,11 +49,11 @@ class MakePotCommand extends BaseCommand {
 		$process = new Process(
 			array(
 				'php',
-				$config['plugin_bin_dir'] . 'wp-cli.phar',
+				$config['paths']['plugin_bin_dir'] . 'wp-cli.phar',
 				'i18n',
 				'make-pot',
-				'.',
-				'languages/' . $config['plugin_folder_name'] . '.pot',
+				$config['paths']['plugin_dir'],
+				$config['paths']['plugin_dir'] . 'languages/' . $config['plugin_folder_name'] . '.pot',
 			)
 		);
 
@@ -73,7 +70,9 @@ class MakePotCommand extends BaseCommand {
 			return 1;
 		}
 
+		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		return 0;
 	}

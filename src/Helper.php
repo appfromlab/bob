@@ -178,12 +178,9 @@ class Helper {
 		if ( empty( $headers ) ) {
 			$headers = array();
 		}
+
 		foreach ( $headers as $field => $field_value ) {
-			if ( preg_match(
-				'/^(?:array(\t)*<\?php)?[\t\/*#@]*' . preg_quote( $field, '/' ) . ':(.*)$/mi',
-				$file_data,
-				$match
-			) && $match[1] ) {
+			if ( preg_match( '/^(?:[ \t]*<\?php)?[ \t\/*#@]*' . preg_quote( $field, '/' ) . ':(.*)$/mi', $file_data, $match ) && $match[1] ) {
 				$headers[ $field ] = trim( $match[1] );
 			} else {
 				$headers[ $field ] = '';

@@ -23,11 +23,17 @@ class DeleteComposerLockCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
+		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+
 		$config = Helper::getConfig();
 
 		if ( ! Helper::safeToDelete( $config['paths']['plugin_composer_lock_file'], 'composer.lock', $config['paths']['plugin_dir'] ) ) {
 			$output->writeln( '<warning>WARNING: Failed to delete composer.lock</warning>' );
 		}
+
+		$output->writeln( '' );
+		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		return 0;
 	}

@@ -41,7 +41,9 @@ class FirstTimeCommand extends BaseCommand {
 			}
 		}
 
+		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		return 0;
 	}

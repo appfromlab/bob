@@ -31,16 +31,13 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 		// Get configuration.
 		$config = Helper::getConfig();
 
-		// Change to parent directory to ensure correct paths.
-		chdir( $config['paths']['plugin_dir'] );
-
 		$process = new Process(
 			array(
 				'php',
-				'vendor/bin/phpcbf',
-				'--standard=.phpcs.xml',
-				'vendor-prefixed/composer',
-				'vendor-prefixed/autoload.php',
+				$config['paths']['plugin_vendor_dir'] . 'bin/phpcbf',
+				'--standard=' . $config['paths']['plugin_dir'] . '.phpcs.xml',
+				$config['paths']['plugin_vendor_prefixed_dir'] . 'composer',
+				$config['paths']['plugin_vendor_prefixed_dir'] . 'autoload.php',
 			)
 		);
 
@@ -52,7 +49,9 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 			}
 		);
 
+		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		// Always exit 0 (force success because it may fail for Github Action).
 		return 0;

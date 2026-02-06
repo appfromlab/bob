@@ -27,14 +27,16 @@ class ScopeCommand extends BaseCommand {
 		// Get configuration.
 		$config = Helper::getConfig();
 
-		// Change to parent directory to ensure correct paths.
+		// Change to plugin directory to ensure correct paths.
+		$previous_cwd = getcwd();
 		chdir( $config['paths']['plugin_dir'] );
 
 		$process = new Process(
 			array(
-				'vendor/bin/php-scoper',
+				'php',
+				$config['paths']['plugin_vendor_dir'] . 'bin/php-scoper',
 				'add-prefix',
-				'--config=./.scoper.inc.php',
+				'--config=' . $config['paths']['plugin_dir'] . '.scoper.inc.php',
 			)
 		);
 
@@ -51,7 +53,12 @@ class ScopeCommand extends BaseCommand {
 			return 1;
 		}
 
+		// Change to previous working directory.
+		chdir( $previous_cwd );
+
+		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		return 0;
 	}
