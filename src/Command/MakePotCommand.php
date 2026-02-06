@@ -26,11 +26,11 @@ class MakePotCommand extends BaseCommand {
 
 		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
-		// Get configuration from composer.json.
+		// Get configuration
 		$config = Helper::getConfig();
 
 		// Change to parent directory to ensure correct paths.
-		chdir( $config['plugin_dir'] );
+		chdir( $config['paths']['plugin_dir'] );
 
 		// Validate paths and configuration.
 		if ( ! file_exists( $config['plugin_bin_dir'] . 'wp-cli.phar' ) ) {
