@@ -32,7 +32,7 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 		$config = Helper::getConfig();
 
 		// Change to parent directory to ensure correct paths.
-		chdir( $config['plugin_dir'] );
+		chdir( $config['paths']['plugin_dir'] );
 
 		$process = new Process(
 			array(
