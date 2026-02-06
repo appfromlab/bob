@@ -9,36 +9,39 @@ declare(strict_types=1);
 
 // check if called from command line.
 if ( in_array( php_sapi_name(), array( 'cli', 'phpdbg' ), true ) === false ) {
-	throw new \RuntimeException( 'This configuration file can only be used from the command line.' );
+	throw new \Exception( 'This configuration file can only be used from the command line.' );
 }
 
+use Isolated\Symfony\Component\Finder\Finder;
+use Appfromlab\Bob\Helper;
+
 /**
- * Get the list of folders to exclude from scoping.
+ * Get PHP-Scoper configuration using appfromlab/bob.
  *
  * @return array
  */
-function afl_bob_get_excluded_folders(): array {
+function afl_scoper_get_config(): array {
 
-	$composer_installed_file_path = __DIR__ . 'vendor/composer/installed.php';
-	$exclude_folders              = array();
+	$afl_bob_helper_path_list = array(
+		__DIR__ . '/vendor-bin/appfromlab-bob/vendor/appfromlab/bob/src/helper.php',
+		__DIR__ . '/vendor/appfromlab/bob/src/helper.php',
+	);
 
-	// find dev packages folders to exclude from scoping.
-	if ( file_exists( $composer_installed_file_path ) ) {
-
-		$installed_packages = include $composer_installed_file_path;
-
-		if ( ! empty( $installed_packages['versions'] ) && is_array( $installed_packages['versions'] ) ) {
-			foreach ( $installed_packages['versions'] as $package_index => $package ) {
-
-				if ( ! empty( $package['dev_requirement'] ) ) {
-					$exclude_folders[] = $package_index;
-				}
-			}
+	foreach ( $afl_bob_helper_path_list as $afl_bob_helper_path ) {
+		if ( file_exists( $afl_bob_helper_path ) ) {
+			require_once $afl_bob_helper_path;
+			break;
 		}
 	}
 
-	return $exclude_folders;
+	if ( ! class_exists( 'Appfromlab\Bob\Helper', false ) ) {
+		throw new \Exception( 'The Appfromlab\Bob\Helper class not found. Make sure appfromlab/bob is installed.' );
+	}
+
+	return Helper::getScoperConfig();
 }
+
+$afl_scoper_config = afl_scoper_get_config();
 
 // You can do your own things here, e.g. collecting symbols to expose dynamically
 // or files to exclude.
@@ -66,11 +69,11 @@ return array(
 	//
 	// For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#finders-and-paths.
 	'finders'                 => array(
-		Isolated\Symfony\Component\Finder\Finder::create()
+		Finder::create()
 		->files()
 		->in( 'vendor' )
 		->name( '*.php' )
-		->exclude( afl_bob_get_excluded_folders() ),
+		->exclude( $afl_scoper_config['excluded_folders'] ),
 	),
 
 	// List of excluded files, i.e. files for which the content will be left untouched.
@@ -98,7 +101,10 @@ return array(
 	// List of symbols to consider internal i.e. to leave untouched.
 	//
 	// For more information see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#excluded-symbols.
-	'exclude-namespaces'      => array(),
+	'exclude-namespaces'      => array(
+		'Composer\\',
+		'MyVendorName\\AFL_Plugin_Boilerplate\\',
+	),
 	'exclude-classes'         => array(
 		// 'ReflectionClassConstant',
 	),
