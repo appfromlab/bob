@@ -27,7 +27,7 @@ class DeleteVendorPrefixedCommand extends BaseCommand {
 
 		if ( file_exists( $config['paths']['plugin_vendor_prefixed_dir'] ) ) {
 
-			if ( ! Helper::safeToDelete( $config['paths']['vendor_prefixed_dir'], 'vendor-prefixed', $config['paths']['vendor_prefixed_dir'] ) ) {
+			if ( ! Helper::safeToDelete( $config['paths']['plugin_vendor_prefixed_dir'], 'vendor-prefixed', $config['paths']['plugin_vendor_prefixed_dir'] ) ) {
 				$output->writeln( '<warning>WARNING: vendor-prefixed folder cannot be deleted.</warning>' );
 			}
 		}
