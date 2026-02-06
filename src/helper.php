@@ -72,8 +72,9 @@ class Helper {
 				'plugin_bin_dir'             => $plugin_dir . '.bin' . DIRECTORY_SEPARATOR,
 				'plugin_language_dir'        => $plugin_dir . 'languages' . DIRECTORY_SEPARATOR,
 				'plugin_readme_file'         => $plugin_dir . 'readme.txt',
+				'plugin_vendor_dir'          => $plugin_dir . 'vendor' . DIRECTORY_SEPARATOR,
 				'plugin_vendor_prefixed_dir' => $plugin_dir . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
-				'php_scoper_config_file'     => $plugin_dir . 'scoper.inc.php',
+				'plugin_scoper_config_file'  => $plugin_dir . 'scoper.inc.php',
 			);
 		}
 
@@ -310,5 +311,55 @@ class Helper {
 		}
 
 		return $exit_code ? false : true;
+	}
+
+	/**
+	 * Get PHP-Scoper configuration
+	 *
+	 * @return array
+	 */
+	public static function getScoperConfig() {
+
+		$config = array(
+			'excluded_folders' => self::getScoperExcludedFolders(),
+		);
+
+		return $config;
+	}
+
+	public static function getScoperExcludedFolders() {
+		$exclude_folders = array();
+
+		$config = self::getConfig();
+
+		// get packages from installed.php.
+		$composer_installed_file_path = $config['paths']['plugin_vendor_dir'] . 'composer/installed.php';
+
+		try {
+			if ( file_exists( $composer_installed_file_path ) ) {
+
+				$installed_packages = include $composer_installed_file_path;
+
+				if ( empty( $installed_packages['root']['name'] ) || ! isset( $installed_packages['versions'] ) ) {
+					throw new \Exception( 'ERROR: Cannot validate /vendor/composer/installed.php.' );
+				}
+
+				if ( is_array( $installed_packages['versions'] ) ) {
+					foreach ( $installed_packages['versions'] as $package_index => $package ) {
+
+						if ( ! empty( $package['dev_requirement'] ) ) {
+							$exclude_folders[] = $package_index;
+						}
+					}
+				}
+			} else {
+				throw new \Exception( 'ERROR: /vendor/composer/installed.php not found.' );
+			}
+		} catch ( \Throwable $th ) {
+			echo $th->getMessage() . "\n";
+			exit( 1 );
+		}
+
+		return $exclude_folders;
 	}
 }
