@@ -1,25 +1,43 @@
 <?php
 /**
- * Configuration for PHP-Scoper
+ * Configuration for PHP-Scoper.
  *
- * @version 20260115
+ * @version 20260206000
  */
+
 declare(strict_types=1);
 
-$afl_composer_installed_file_path = __DIR__ . 'vendor/composer/installed.php';
-$afl_exclude_folders              = array();
+// check if called from command line.
+if ( in_array( php_sapi_name(), array( 'cli', 'phpdbg' ), true ) === false ) {
+	throw new \RuntimeException( 'This configuration file can only be used from the command line.' );
+}
 
-// find dev packages folders to exclude from scoping
-if ( file_exists( $afl_composer_installed_file_path ) ) {
-	$afl_composer_installed_packages = include $afl_composer_installed_file_path;
+/**
+ * Get the list of folders to exclude from scoping.
+ *
+ * @return array
+ */
+function afl_bob_get_excluded_folders(): array {
 
-	if ( ! empty( $afl_composer_installed_packages['versions'] ) && is_array( $afl_composer_installed_packages['versions'] ) ) {
-		foreach ( $afl_composer_installed_packages['versions'] as $package_index => $package ) {
-			if ( ! empty( $package['dev_requirement'] ) ) {
-				$afl_exclude_folders[] = $package_index;
+	$composer_installed_file_path = __DIR__ . 'vendor/composer/installed.php';
+	$exclude_folders              = array();
+
+	// find dev packages folders to exclude from scoping.
+	if ( file_exists( $composer_installed_file_path ) ) {
+
+		$installed_packages = include $composer_installed_file_path;
+
+		if ( ! empty( $installed_packages['versions'] ) && is_array( $installed_packages['versions'] ) ) {
+			foreach ( $installed_packages['versions'] as $package_index => $package ) {
+
+				if ( ! empty( $package['dev_requirement'] ) ) {
+					$exclude_folders[] = $package_index;
+				}
 			}
 		}
 	}
+
+	return $exclude_folders;
 }
 
 // You can do your own things here, e.g. collecting symbols to expose dynamically
@@ -52,7 +70,7 @@ return array(
 		->files()
 		->in( 'vendor' )
 		->name( '*.php' )
-		->exclude( $afl_exclude_folders ),
+		->exclude( afl_bob_get_excluded_folders() ),
 	),
 
 	// List of excluded files, i.e. files for which the content will be left untouched.
