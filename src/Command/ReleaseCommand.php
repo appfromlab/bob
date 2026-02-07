@@ -1,4 +1,13 @@
 <?php
+/**
+ * Plugin Release Command
+ *
+ * Orchestrates the complete plugin release process including building,
+ * bumping version, generating readme, and creating language files.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Composer\BatchCommands;
@@ -9,8 +18,18 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
+/**
+ * Execute complete release workflow
+ */
 class ReleaseCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:release' )
 			->setDescription( 'Perform the release process which builds the code, bump version, generate readme.txt and make-pot.' );
@@ -19,7 +38,11 @@ class ReleaseCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Executes the complete release workflow.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success, non-zero for failure).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

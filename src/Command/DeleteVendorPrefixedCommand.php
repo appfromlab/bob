@@ -1,4 +1,12 @@
 <?php
+/**
+ * Delete Vendor Prefixed Directory Command
+ *
+ * Removes the vendor-prefixed directory from the WordPress plugin folder.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
@@ -11,6 +19,13 @@ use Composer\Command\BaseCommand;
  */
 class DeleteVendorPrefixedCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:delete-vendor-prefixed' )
 			->setDescription( 'Delete vendor-prefixed folder in the WordPress plugin folder.' );
@@ -19,7 +34,11 @@ class DeleteVendorPrefixedCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Deletes the vendor-prefixed directory from the plugin.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

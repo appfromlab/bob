@@ -1,4 +1,12 @@
 <?php
+/**
+ * Bob Command Provider
+ *
+ * Registers and provides all available Bob commands to the Composer plugin system.
+ *
+ * @package Appfromlab\Bob\Composer
+ */
+
 namespace Appfromlab\Bob\Composer;
 
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
@@ -18,8 +26,20 @@ use Appfromlab\Bob\Command\ReleaseCommand;
 use Appfromlab\Bob\Command\RequireDevGlobalCommand;
 use Appfromlab\Bob\Command\ScopeCommand;
 
+/**
+ * Command provider for registering Bob commands
+ *
+ * Implements the Composer command provider capability to register all available commands.
+ */
 class CommandProvider implements CommandProviderCapability {
 
+	/**
+	 * Get available commands
+	 *
+	 * Returns all registered Bob commands for use in the Composer command factory.
+	 *
+	 * @return array Array of command instances.
+	 */
 	public function getCommands() {
 		return array(
 			new BuildCommand(),

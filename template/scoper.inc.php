@@ -1,8 +1,16 @@
 <?php
 /**
- * Configuration for PHP-Scoper.
+ * PHP-Scoper Configuration Template
  *
+ * This file configures PHP-Scoper for prefixing vendor dependencies.
+ * PHP-Scoper automatically prefixes all dependencies to avoid conflicts
+ * with plugins that may depend on the same packages.
+ *
+ * @package Appfromlab\Bob\Template
  * @version 20260206000
+ *
+ * The configuration is dynamically generated using Helper::getScoperConfig()
+ * to determine which packages should be excluded from scoping (dev dependencies).
  */
 
 declare(strict_types=1);
@@ -18,7 +26,13 @@ use Appfromlab\Bob\Helper;
 /**
  * Get PHP-Scoper configuration using appfromlab/bob.
  *
- * @return array
+ * Loads and configures the Helper class to retrieve scoper configuration settings,
+ * including details about which vendor packages should be excluded from scoping
+ * (typically dev dependencies).
+ *
+ * @return array PHP-Scoper configuration array with scope settings,
+ *              output directory, finders, and excluded symbols.
+ * @throws \Exception If the Helper class cannot be loaded.
  */
 function afl_scoper_get_config(): array {
 

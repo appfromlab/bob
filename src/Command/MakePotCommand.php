@@ -1,4 +1,13 @@
 <?php
+/**
+ * Make POT File Command
+ *
+ * Generates a WordPress plugin POT (Portable Object Template) language file
+ * for internationalization/translation purposes using WP-CLI.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
@@ -12,6 +21,13 @@ use Composer\Command\BaseCommand;
  */
 class MakePotCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:make-pot' )
 			->setDescription( 'Generate the plugin language POT file' );
@@ -20,7 +36,11 @@ class MakePotCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Generates the plugin POT language file using WP-CLI.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success, 1 on error).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

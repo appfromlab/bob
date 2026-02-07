@@ -1,4 +1,13 @@
 <?php
+/**
+ * Install Binary Tools Command
+ *
+ * Downloads and verifies binary tools required for development,
+ * including the WordPress CLI (WP-CLI) with GPG signature verification.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
@@ -7,8 +16,18 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
+/**
+ * Download and install required binary tools
+ */
 class InstallBinCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:install-bin' )
 			->setDescription( 'Install required bin files for local development.' );
@@ -17,7 +36,11 @@ class InstallBinCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Downloads and verifies binary tools for development.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success, non-zero for failure).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

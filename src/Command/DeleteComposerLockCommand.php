@@ -1,4 +1,12 @@
 <?php
+/**
+ * Delete Composer Lock File Command
+ *
+ * Removes the composer.lock file from the WordPress plugin folder.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
@@ -11,6 +19,13 @@ use Composer\Command\BaseCommand;
  */
 class DeleteComposerLockCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:delete-composer-lock' )
 			->setDescription( 'Delete composer.lock file in the WordPress plugin folder.' );
@@ -19,7 +34,11 @@ class DeleteComposerLockCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Deletes the composer.lock file from the plugin directory.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

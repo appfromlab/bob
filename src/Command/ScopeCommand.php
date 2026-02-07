@@ -1,4 +1,13 @@
 <?php
+/**
+ * PHP-Scoper Scope Command
+ *
+ * Runs PHP-Scoper to prefix all dependencies in the vendor directory
+ * to avoid conflicts with plugins that may have the same dependencies.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
@@ -7,8 +16,18 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
+/**
+ * Execute PHP-Scoper on vendor folder
+ */
 class ScopeCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:scope' )
 			->setDescription( 'Perform php-scoper on vendor folder.' );
@@ -17,7 +36,11 @@ class ScopeCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Runs PHP-Scoper to prefix vendor dependencies.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

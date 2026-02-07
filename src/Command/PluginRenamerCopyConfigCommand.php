@@ -1,4 +1,13 @@
 <?php
+/**
+ * Plugin Renamer Copy Config Command
+ *
+ * Copies the plugin renamer configuration template to the plugin's configuration directory
+ * for user customization before running the renaming process.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
@@ -12,6 +21,13 @@ use Composer\Command\BaseCommand;
  */
 class PluginRenamerCopyConfigCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:plugin-renamer-copy-config' )
 			->setDescription( 'Copy plugin renamer file to your WordPress plugin folder.' );
@@ -20,7 +36,11 @@ class PluginRenamerCopyConfigCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Copies the plugin renamer configuration template for user customization.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success, 1 on error).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

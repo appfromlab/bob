@@ -1,4 +1,13 @@
 <?php
+/**
+ * Batch Commands Executor
+ *
+ * Executes a series of Composer commands and shell processes sequentially,
+ * managing working directory context and error handling.
+ *
+ * @package Appfromlab\Bob\Composer
+ */
+
 namespace Appfromlab\Bob\Composer;
 
 use Appfromlab\Bob\Helper;
@@ -10,16 +19,24 @@ use function chdir;
 use function getcwd;
 use function is_a;
 
+/**
+ * Batch command executor
+ *
+ * Executes multiple commands (both Composer commands and shell processes) in sequence,
+ * handling directory changes and error handling.
+ */
 class BatchCommands {
 
 	/**
 	 * Execute a series of commands
 	 *
-	 * @param array           $commands Array of commands to execute.
-	 * @param InputInterface  $input Input interface.
-	 * @param OutputInterface $output Output interface.
+	 * Runs multiple commands (Composer BaseCommand instances or shell commands as arrays)
+	 * in sequence with proper error handling and working directory management.
 	 *
-	 * @return int
+	 * @param array           $commands Array of commands to execute.
+	 * @param InputInterface  $input    Input interface for the commands.
+	 * @param OutputInterface $output   Output interface for displaying results.
+	 * @return int Exit code (0 for success, non-zero for failure).
 	 */
 	public static function run( array $commands, InputInterface $input, OutputInterface $output ): int {
 

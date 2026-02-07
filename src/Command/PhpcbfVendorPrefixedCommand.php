@@ -1,4 +1,13 @@
 <?php
+/**
+ * PHP CodeSniffer Beautifier for Vendor Prefixed Command
+ *
+ * Applies PHP CodeSniffer beautification rules to the vendor-prefixed directory
+ * to ensure consistent code formatting.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
@@ -22,7 +31,11 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Beautifies code in the vendor-prefixed directory using PHP CodeSniffer.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (always 0 for success).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

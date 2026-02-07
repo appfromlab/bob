@@ -1,17 +1,44 @@
 <?php
+/**
+ * Hello Command
+ *
+ * A simple test command that demonstrates console output with various message types.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
+/**
+ * Display greeting with formatted output examples
+ */
 class HelloCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:hello' )
 			->setDescription( 'Say hello' );
 	}
 
+	/**
+	 * Execute the command
+	 *
+	 * Displays greeting and demonstrates various output message types.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success).
+	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
 		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );

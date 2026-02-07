@@ -1,4 +1,13 @@
 <?php
+/**
+ * Plugin Renamer Command
+ *
+ * Renames all occurrences of plugin identifiers (namespace, prefixes, constants, etc.)
+ * throughout the plugin codebase based on configuration file specifications.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
@@ -11,6 +20,13 @@ use Composer\Command\BaseCommand;
  */
 class PluginRenamerCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:plugin-renamer' )
 			->setDescription( 'Rename a plugin using the plugin renamer config file.' );
@@ -19,7 +35,11 @@ class PluginRenamerCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Renames all plugin identifiers according to the configuration file.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success, 1 on error).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

@@ -1,4 +1,13 @@
 <?php
+/**
+ * First Time Command
+ *
+ * Performs initial setup for a new plugin installation by copying configuration
+ * file and deleting the composer.lock file.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Composer\BatchCommands;
@@ -8,8 +17,18 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
+/**
+ * Initialize plugin for first-time use
+ */
 class FirstTimeCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:first-time' )
 			->setDescription( 'Copy plugin-renamer-config.php and delete composer.lock file.' );
@@ -18,7 +37,11 @@ class FirstTimeCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Performs first-time setup for a new plugin installation.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success, non-zero for failure).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

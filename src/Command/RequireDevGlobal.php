@@ -1,4 +1,13 @@
 <?php
+/**
+ * Require Development Global Composer Packages Command
+ *
+ * Installs global Composer development packages required for plugin development,
+ * including WordPress coding standards and PHP-Scoper.
+ *
+ * @package Appfromlab\Bob\Command
+ */
+
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Composer\BatchCommands;
@@ -6,8 +15,25 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
+/**
+ * Install global development composer packages
+ */
 class RequireDevGlobalCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:require-dev-global' )
 			->setDescription( 'Add global composer packages for development.' );
@@ -16,7 +42,11 @@ class RequireDevGlobalCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * @return int
+	 * Installs required global development composer packages.
+	 *
+	 * @param InputInterface  $input  The input interface.
+	 * @param OutputInterface $output The output interface.
+	 * @return int Exit code (0 for success, non-zero for failure).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 

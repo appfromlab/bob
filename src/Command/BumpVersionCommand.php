@@ -14,6 +14,13 @@ use Composer\Command\BaseCommand;
  */
 class BumpVersionCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:bump-version' )
 			->setDescription( 'Bump plugin version using value from plugin header.' );
