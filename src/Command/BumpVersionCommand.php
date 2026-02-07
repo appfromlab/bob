@@ -28,6 +28,7 @@ class BumpVersionCommand extends BaseCommand {
 
 		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
+		// Get configuration.
 		$config = Helper::getConfig();
 
 		$plugin_headers = Helper::getPluginHeaders( $config['paths']['plugin_file'] );
@@ -49,7 +50,7 @@ class BumpVersionCommand extends BaseCommand {
 		$custom_config_file_path = $config['paths']['plugin_extra_tools_dir'] . 'bump-version-extra.php';
 
 		if ( file_exists( $custom_config_file_path ) ) {
-			include_once $custom_config_file_path;
+			include $custom_config_file_path;
 		}
 
 		$output->writeln( '' );

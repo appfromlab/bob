@@ -2,9 +2,9 @@
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
+use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
 
 /**
@@ -45,8 +45,7 @@ class MakePotCommand extends BaseCommand {
 			return 1;
 		}
 
-		// Build command with arguments.
-		$process = new Process(
+		$commands = array(
 			array(
 				'php',
 				$config['paths']['plugin_bin_dir'] . 'wp-cli.phar',
@@ -54,26 +53,15 @@ class MakePotCommand extends BaseCommand {
 				'make-pot',
 				$config['paths']['plugin_dir'],
 				$config['paths']['plugin_dir'] . 'languages/' . $config['plugin_folder_name'] . '.pot',
-			)
+			),
 		);
 
-		$output->writeln( 'Running: ' . $process->getCommandLine() );
-
-		$process->run(
-			function ( $type, $buffer ) use ( $output ) {
-				$output->write( $buffer );
-			}
-		);
-
-		if ( ! $process->isSuccessful() ) {
-			$output->writeln( '<error>ERROR: Failed to generate POT file</error>' );
-			return 1;
-		}
+		$exit_code = BatchCommands::run( $commands, $input, $output );
 
 		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
-		return 0;
+		return $exit_code;
 	}
 }

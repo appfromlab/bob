@@ -28,6 +28,7 @@ class ReadmeGeneratorCommand extends BaseCommand {
 
 		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
+		// Get configuration.
 		$config = Helper::getConfig();
 
 		$plugin_headers = Helper::getPluginHeaders( $config['paths']['plugin_file'] );

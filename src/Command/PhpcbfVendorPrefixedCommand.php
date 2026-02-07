@@ -2,9 +2,9 @@
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
+use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
 
 /**
@@ -31,23 +31,17 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 		// Get configuration.
 		$config = Helper::getConfig();
 
-		$process = new Process(
+		$commands = array(
 			array(
 				'php',
 				$config['paths']['plugin_vendor_dir'] . 'bin/phpcbf',
 				'--standard=' . $config['paths']['plugin_dir'] . '.phpcs.xml',
 				$config['paths']['plugin_vendor_prefixed_dir'] . 'composer',
 				$config['paths']['plugin_vendor_prefixed_dir'] . 'autoload.php',
-			)
+			),
 		);
 
-		$output->writeln( 'Running: ' . $process->getCommandLine() );
-
-		$process->run(
-			function ( $type, $buffer ) use ( $output ) {
-				$output->write( $buffer );
-			}
-		);
+		$exit_code = BatchCommands::run( $commands, $input, $output );
 
 		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );

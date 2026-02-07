@@ -26,6 +26,7 @@ class PluginRenamerCopyConfigCommand extends BaseCommand {
 
 		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
+		// Get configuration.
 		$config = Helper::getConfig();
 
 		$default_config_file_path = $config['paths']['template_dir'] . 'plugin-renamer-config.php';

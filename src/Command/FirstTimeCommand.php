@@ -1,7 +1,7 @@
 <?php
 namespace Appfromlab\Bob\Command;
 
-use Appfromlab\Bob\Helper;
+use Appfromlab\Bob\Composer\BatchCommands;
 use Appfromlab\Bob\Command\DeleteComposerLockCommand;
 use Appfromlab\Bob\Command\PluginRenamerCopyConfigCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,22 +29,12 @@ class FirstTimeCommand extends BaseCommand {
 			new DeleteComposerLockCommand(),
 		);
 
-		foreach ( $commands as $command ) {
-
-			$output->writeln( '' );
-
-			$return_code = $command->execute( $input, $output );
-
-			if ( 0 !== $return_code ) {
-				$output->writeln( '<error>ERROR: Command failed - ' . $command->getName() . '</error>' );
-				return 1;
-			}
-		}
+		$exit_code = BatchCommands::run( $commands, $input, $output );
 
 		$output->writeln( '' );
 		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
-		return 0;
+		return $exit_code;
 	}
 }
