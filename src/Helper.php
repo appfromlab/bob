@@ -1,15 +1,29 @@
 <?php
+/**
+ * Helper utilities for Bob plugin manager
+ *
+ * This class provides utility methods for managing WordPress plugin configuration,
+ * file operations, and PHP-Scoper configuration for the Appfromlab Bob plugin manager.
+ *
+ * @package Appfromlab\Bob
+ */
+
 namespace Appfromlab\Bob;
 
 /**
  * Helper class for tools
+ *
+ * Provides utility methods for file handling, configuration management, and plugin operations.
  */
 class Helper {
 
 	/**
 	 * Find the composer.json path of the WordPress plugin
 	 *
-	 * @return string
+	 * Traverses up the directory tree to locate the composer.json file that contains
+	 * the appfromlab/bob configuration.
+	 *
+	 * @return string The path to composer.json, or empty string if not found.
 	 */
 	public static function findComposerJsonPath() {
 
@@ -43,7 +57,10 @@ class Helper {
 	/**
 	 * Get file and folder paths
 	 *
-	 * @return array
+	 * Returns an array of paths for plugin directories and files based on the
+	 * composer.json configuration.
+	 *
+	 * @return array Associative array of path configurations.
 	 */
 	private static function getPaths() {
 
@@ -65,11 +82,11 @@ class Helper {
 				'plugin_composer_lock_file'  => $plugin_dir . 'composer.lock',
 				'plugin_dir'                 => $plugin_dir,
 				'plugin_file'                => '',
+				'plugin_bin_dir'             => $plugin_dir . '.bin' . DIRECTORY_SEPARATOR,
 				'plugin_extra_dir'           => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR,
 				'plugin_extra_config_dir'    => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR,
 				'plugin_extra_tools_dir'     => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR,
 				'plugin_extra_readme_dir'    => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'readme' . DIRECTORY_SEPARATOR,
-				'plugin_bin_dir'             => $plugin_dir . '.bin' . DIRECTORY_SEPARATOR,
 				'plugin_language_dir'        => $plugin_dir . 'languages' . DIRECTORY_SEPARATOR,
 				'plugin_readme_file'         => $plugin_dir . 'readme.txt',
 				'plugin_vendor_dir'          => $plugin_dir . 'vendor' . DIRECTORY_SEPARATOR,
@@ -84,7 +101,10 @@ class Helper {
 	/**
 	 * Get general plugin configuration
 	 *
-	 * @return array
+	 * Loads and validates the plugin configuration from composer.json extra section.
+	 * Exits with error if configuration is missing or invalid.
+	 *
+	 * @return array Plugin configuration array with paths and settings.
 	 */
 	public static function getConfig() {
 
@@ -127,6 +147,11 @@ class Helper {
 
 	/**
 	 * Get the plugin header data in associative array
+	 *
+	 * Extracts standard WordPress plugin headers from the main plugin file.
+	 *
+	 * @param string $plugin_file Path to the main plugin file.
+	 * @return array Plugin header data.
 	 */
 	public static function getPluginHeaders( $plugin_file ) {
 
@@ -162,6 +187,13 @@ class Helper {
 
 	/**
 	 * Extract File Header Data based on headers given
+	 *
+	 * Reads the first 8KB of a file and extracts header data based on the provided
+	 * header keys using regex pattern matching.
+	 *
+	 * @param string $file      Path to the file to read.
+	 * @param array  $headers   Associative array of headers to extract.
+	 * @return array Associative array with extracted header data.
 	 */
 	public static function getFileData( $file, $headers ) {
 
@@ -193,7 +225,11 @@ class Helper {
 	/**
 	 * Replace a file content based on regex pattern
 	 *
-	 * @param array $files_regex_pattern array( 'file_path' => array( 'regex_here', 'replace_with_value' ) ).
+	 * Performs regex-based find and replace on one or more files and outputs the results.
+	 * Exits with error if pattern match fails.
+	 *
+	 * @param array $files_regex_pattern Associative array with format:
+	 *                                   'file_path' => array( 'regex_pattern', 'replacement_value' )
 	 * @return void
 	 */
 	public static function replaceFileContentWithRegex( $files_regex_pattern ) {
@@ -313,7 +349,9 @@ class Helper {
 	/**
 	 * Get PHP-Scoper configuration
 	 *
-	 * @return array
+	 * Retrieves configuration for PHP-Scoper including list of folders to exclude.
+	 *
+	 * @return array Scoper configuration array.
 	 */
 	public static function getScoperConfig() {
 
@@ -324,6 +362,14 @@ class Helper {
 		return $config;
 	}
 
+	/**
+	 * Get list of folders excluded from PHP-Scoper
+	 *
+	 * Reads the composer installed.php file and extracts package names that are
+	 * marked as dev requirements, which should be excluded from scoping.
+	 *
+	 * @return array List of package names to exclude from scoping.
+	 */
 	public static function getScoperExcludedFolders() {
 		$exclude_folders = array();
 

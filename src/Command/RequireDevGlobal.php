@@ -1,25 +1,24 @@
 <?php
 /**
- * PHP-Scoper Scope Command
+ * Require Development Global Composer Packages Command
  *
- * Runs PHP-Scoper to prefix all dependencies in the vendor directory
- * to avoid conflicts with plugins that may have the same dependencies.
+ * Installs global Composer development packages required for plugin development,
+ * including WordPress coding standards and PHP-Scoper.
  *
  * @package Appfromlab\Bob\Command
  */
 
 namespace Appfromlab\Bob\Command;
 
-use Appfromlab\Bob\Helper;
 use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
 /**
- * Execute PHP-Scoper on vendor folder
+ * Install global development composer packages
  */
-class ScopeCommand extends BaseCommand {
+class RequireDevGlobalCommand extends BaseCommand {
 
 	/**
 	 * Configure the command
@@ -28,34 +27,35 @@ class ScopeCommand extends BaseCommand {
 	 *
 	 * @return void
 	 */
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
-		$this->setName( 'afl:scope' )
-			->setDescription( 'Perform php-scoper on vendor folder.' );
+		$this->setName( 'afl:require-dev-global' )
+			->setDescription( 'Add global composer packages for development.' );
 	}
 
 	/**
 	 * Execute the command
 	 *
-	 * Runs PHP-Scoper to prefix vendor dependencies.
+	 * Installs required global development composer packages.
 	 *
 	 * @param InputInterface  $input  The input interface.
 	 * @param OutputInterface $output The output interface.
-	 * @return int Exit code (0 for success).
+	 * @return int Exit code (0 for success, non-zero for failure).
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
 		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
-		// Get configuration.
-		$config = Helper::getConfig();
-
 		$commands = array(
-			array(
-				'php',
-				$config['paths']['plugin_vendor_dir'] . 'bin/php-scoper',
-				'add-prefix',
-				'--config=' . $config['paths']['plugin_dir'] . '.scoper.inc.php',
-			),
+			array( 'composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true' ),
+			array( 'composer global require --dev wp-coding-standards/wpcs:~3.0' ),
+			array( 'composer global require --dev humbug/php-scoper:0.18.*' ),
 		);
 
 		$exit_code = BatchCommands::run( $commands, $input, $output );

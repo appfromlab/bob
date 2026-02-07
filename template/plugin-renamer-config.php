@@ -1,4 +1,19 @@
 <?php
+/**
+ * Plugin Renamer Configuration Template
+ *
+ * This is a template configuration file for the plugin renamer command.
+ * Copy this file to .afl-extra/config/plugin-renamer-config.php and update
+ * the values to match your plugin's naming scheme.
+ *
+ * @package Appfromlab\Bob\Template
+ *
+ * @return array Configuration array with the following structure:
+ *         - 'name_list': Associative array of plugin naming conventions
+ *         - 'merge_tags': Additional replacement tags
+ *         - 'folder_list': Folders to search for replacements
+ *         - 'file_list': Specific files to search for replacements
+ */
 
 return array(
 	'name_list'   => array(

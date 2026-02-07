@@ -16,9 +16,6 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": [
-        "bin/afl-bob"
-    ],
     "extra": {
         "class": "Appfromlab\\Bob\\Composer\\BobPlugin"
     },

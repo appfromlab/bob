@@ -14,6 +14,13 @@ use Composer\Command\BaseCommand;
  */
 class BumpVersionCommand extends BaseCommand {
 
+	/**
+	 * Configure the command
+	 *
+	 * Sets the command name and description.
+	 *
+	 * @return void
+	 */
 	protected function configure(): void {
 		$this->setName( 'afl:bump-version' )
 			->setDescription( 'Bump plugin version using value from plugin header.' );
@@ -28,6 +35,7 @@ class BumpVersionCommand extends BaseCommand {
 
 		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
 
+		// Get configuration.
 		$config = Helper::getConfig();
 
 		$plugin_headers = Helper::getPluginHeaders( $config['paths']['plugin_file'] );
@@ -49,7 +57,7 @@ class BumpVersionCommand extends BaseCommand {
 		$custom_config_file_path = $config['paths']['plugin_extra_tools_dir'] . 'bump-version-extra.php';
 
 		if ( file_exists( $custom_config_file_path ) ) {
-			include_once $custom_config_file_path;
+			include $custom_config_file_path;
 		}
 
 		$output->writeln( '' );
