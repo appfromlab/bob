@@ -14,6 +14,7 @@ use Appfromlab\Bob\Helper;
 use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
 
 /**
@@ -44,7 +45,9 @@ class MakePotCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
+		$output->writeln( '<info>------ [START] ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		// Get configuration.
 		$config = Helper::getConfig();
@@ -66,20 +69,22 @@ class MakePotCommand extends BaseCommand {
 		}
 
 		$commands = array(
-			array(
-				'php',
-				$config['paths']['plugin_bin_dir'] . 'wp-cli.phar',
-				'i18n',
-				'make-pot',
-				$config['paths']['plugin_dir'],
-				$config['paths']['plugin_dir'] . 'languages/' . $config['plugin_folder_name'] . '.pot',
+			new Process(
+				array(
+					'php',
+					$config['paths']['plugin_bin_dir'] . 'wp-cli.phar',
+					'i18n',
+					'make-pot',
+					$config['paths']['plugin_dir'],
+					$config['paths']['plugin_dir'] . 'languages/' . $config['plugin_folder_name'] . '.pot',
+				),
 			),
 		);
 
-		$exit_code = BatchCommands::run( $commands, $input, $output );
+		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 
 		$output->writeln( '' );
-		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
 		return $exit_code;

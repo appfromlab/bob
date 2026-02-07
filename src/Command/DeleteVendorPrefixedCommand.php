@@ -42,7 +42,9 @@ class DeleteVendorPrefixedCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
+		$output->writeln( '<info>------ [START] ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		$config = Helper::getConfig();
 
@@ -54,7 +56,7 @@ class DeleteVendorPrefixedCommand extends BaseCommand {
 		}
 
 		$output->writeln( '' );
-		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
 		// can continue.

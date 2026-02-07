@@ -11,10 +11,9 @@
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Composer\BatchCommands;
-use Appfromlab\Bob\Command\DeleteComposerLockCommand;
-use Appfromlab\Bob\Command\PluginRenamerCopyConfigCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\ArrayInput;
 use Composer\Command\BaseCommand;
 
 /**
@@ -45,17 +44,19 @@ class FirstTimeCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
+		$output->writeln( '<info>------ [START] ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		$commands = array(
-			new PluginRenamerCopyConfigCommand(),
-			new DeleteComposerLockCommand(),
+			new ArrayInput( array( 'command' => 'afl:plugin-renamer-copy-config' ) ),
+			new ArrayInput( array( 'command' => 'afl:delete-composer-lock' ) ),
 		);
 
-		$exit_code = BatchCommands::run( $commands, $input, $output );
+		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 
 		$output->writeln( '' );
-		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
 		return $exit_code;

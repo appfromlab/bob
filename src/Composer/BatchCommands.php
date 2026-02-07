@@ -11,7 +11,8 @@
 namespace Appfromlab\Bob\Composer;
 
 use Appfromlab\Bob\Helper;
-use Composer\Command\BaseCommand;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
@@ -33,12 +34,12 @@ class BatchCommands {
 	 * Runs multiple commands (Composer BaseCommand instances or shell commands as arrays)
 	 * in sequence with proper error handling and working directory management.
 	 *
-	 * @param array           $commands Array of commands to execute.
-	 * @param InputInterface  $input    Input interface for the commands.
-	 * @param OutputInterface $output   Output interface for displaying results.
+	 * @param Application           $application Instance of application.
+	 * @param array<InputInterface> $commands Array of commands to execute.
+	 * @param OutputInterface       $output   Output interface for displaying results.
 	 * @return int Exit code (0 for success, non-zero for failure).
 	 */
-	public static function run( array $commands, InputInterface $input, OutputInterface $output ): int {
+	public static function run( Application $application, array $commands, OutputInterface $output ): int {
 
 		// Get configuration.
 		$config = Helper::getConfig();
@@ -49,32 +50,39 @@ class BatchCommands {
 
 		try {
 
-			foreach ( $commands as $command_args ) {
+			$application->setAutoExit( false );
 
-				if ( is_a( $command_args, BaseCommand::class ) ) {
+			foreach ( $commands as $single_command ) {
 
-					$output->writeln( '' );
+				if ( is_a( $single_command, 'Symfony\Component\Console\Input\ArrayInput' ) ) {
 
-					$exit_code = $command_args->execute( $input, $output );
+					$output->writeln( '<info>Command:</info> ' . (string) $single_command );
+
+					$exit_code = $application->run( $single_command, $output );
 
 					if ( 0 !== $exit_code ) {
-						throw new \Error( 'Command failed - ' . $command_args->getName(), $exit_code );
+						throw new \Error( 'Command Failed: ' . (string) $single_command, $exit_code );
 					}
-				} elseif ( is_array( $command_args ) ) {
+				} elseif ( is_a( $single_command, 'Symfony\Component\Process\Process' ) ) {
 
-					$process = new Process( $command_args );
+					$output->writeln( '<info>Process:</info> ' . $single_command->getCommandLine() );
+					$output->writeln( '' );
 
-					$output->writeln( '<info>Process: ' . $process->getCommandLine() . '</info>' );
-
-					$exit_code = $process->run(
+					$exit_code = $single_command->run(
 						function ( $type, $buffer ) use ( $output ) {
 							$output->write( $buffer );
 						}
 					);
 
-					if ( ! $process->isSuccessful() ) {
-						throw new \Error( 'Command failed - ' . $process->getCommandLine(), $exit_code );
+					$env = $single_command->getEnv();
+
+					if ( is_array( $env ) && array_key_exists( 'AFL_BOB_FORCE_EXIT_0', $env ) ) {
+						$exit_code = 0;
+					} elseif ( ! $single_command->isSuccessful() ) {
+						throw new \Error( 'Process Failed: ' . $single_command->getCommandLine(), $exit_code );
 					}
+				} else {
+					throw new \Error( 'Command is not of type ArrayInput or Process.', 1 );
 				}
 			}
 		} catch ( \Throwable $th ) {
