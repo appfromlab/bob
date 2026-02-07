@@ -14,6 +14,7 @@ use Appfromlab\Bob\Command\PluginRenamerCommand;
 use Appfromlab\Bob\Command\PluginRenamerCopyConfigCommand;
 use Appfromlab\Bob\Command\ReadmeGeneratorCommand;
 use Appfromlab\Bob\Command\ReleaseCommand;
+use Appfromlab\Bob\Command\RequireDevGlobalCommand;
 use Appfromlab\Bob\Command\ScopeCommand;
 
 class CommandProvider implements CommandProviderCapability {
@@ -32,6 +33,7 @@ class CommandProvider implements CommandProviderCapability {
 			new PluginRenamerCopyConfigCommand(),
 			new ReadmeGeneratorCommand(),
 			new ReleaseCommand(),
+			new RequireDevGlobalCommand(),
 			new ScopeCommand(),
 		);
 	}
