@@ -8,6 +8,7 @@ use Appfromlab\Bob\Command\DeleteComposerLockCommand;
 use Appfromlab\Bob\Command\DeleteVendorPrefixedCommand;
 use Appfromlab\Bob\Command\FirstTimeCommand;
 use Appfromlab\Bob\Command\HelloCommand;
+use Appfromlab\Bob\Command\InstallBinCommand;
 use Appfromlab\Bob\Command\MakePotCommand;
 use Appfromlab\Bob\Command\PhpcbfVendorPrefixedCommand;
 use Appfromlab\Bob\Command\PluginRenamerCommand;
@@ -27,6 +28,7 @@ class CommandProvider implements CommandProviderCapability {
 			new DeleteVendorPrefixedCommand(),
 			new FirstTimeCommand(),
 			new HelloCommand(),
+			new InstallBinCommand(),
 			new MakePotCommand(),
 			new PhpcbfVendorPrefixedCommand(),
 			new PluginRenamerCommand(),
