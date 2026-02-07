@@ -12,6 +12,8 @@ namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
 use Appfromlab\Bob\Composer\BatchCommands;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
@@ -44,23 +46,41 @@ class BuildCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
+		$output->writeln( '<info>------ [START] ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		// Get configuration.
 		$config = Helper::getConfig();
 
 		$commands = array(
-			array( 'composer dump-autoload --no-dev' ),
-			new DeleteVendorPrefixedCommand(),
-			new ScopeCommand(),
-			new PhpcbfVendorPrefixedCommand(),
-			array( 'composer dump-autoload' ),
+			new Process(
+				array(
+					'composer',
+					'dump-autoload',
+					'-d',
+					$config['paths']['plugin_dir'],
+					'--no-dev',
+					'--no-scripts',
+				)
+			),
+			new ArrayInput( array( 'command' => 'afl:delete-vendor-prefixed' ) ),
+			new ArrayInput( array( 'command' => 'afl:scope' ) ),
+			new ArrayInput( array( 'command' => 'afl:phpcbf-vendor-prefixed' ) ),
+			new Process(
+				array(
+					'composer',
+					'dump-autoload',
+					'-d',
+					$config['paths']['plugin_dir'],
+				)
+			),
 		);
 
-		$exit_code = BatchCommands::run( $commands, $input, $output );
+		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 
 		$output->writeln( '' );
-		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
 		return $exit_code;

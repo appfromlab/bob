@@ -33,7 +33,9 @@ class BumpVersionCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
+		$output->writeln( '<info>------ [START] ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		// Get configuration.
 		$config = Helper::getConfig();
@@ -61,7 +63,7 @@ class BumpVersionCommand extends BaseCommand {
 		}
 
 		$output->writeln( '' );
-		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
 		return 0;

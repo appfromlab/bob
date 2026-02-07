@@ -41,7 +41,8 @@ class HelloCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
+		$output->writeln( '<info>------ [START] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
 		$output->writeln( 'Hello there...' );
@@ -53,7 +54,7 @@ class HelloCommand extends BaseCommand {
 		$output->writeln( '<error>This is an error message</error>' );
 
 		$output->writeln( '' );
-		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
 		return 0;

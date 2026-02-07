@@ -14,6 +14,7 @@ use Appfromlab\Bob\Helper;
 use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
 
 /**
@@ -44,7 +45,9 @@ class InstallBinCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
+		$output->writeln( '<info>------ [START] ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		// Get configuration.
 		$config = Helper::getConfig();
@@ -55,16 +58,16 @@ class InstallBinCommand extends BaseCommand {
 		}
 
 		$commands = array(
-			array( 'curl -L https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o ./.bin/wp-cli.phar' ),
-			array( 'curl -L https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar.asc -o ./.bin/wp-cli.phar.asc' ),
-			array( 'curl -L https://raw.githubusercontent.com/wp-cli/builds/gh-pages/wp-cli.pgp -o ./.bin/wp-cli.pgp | gpg --import ./.bin/wp-cli.pgp' ),
-			array( 'gpg --verify ./.bin/wp-cli.phar.asc ./.bin/wp-cli.phar || exit 1' ),
+			new Process( array( 'curl -L https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o ./.bin/wp-cli.phar' ) ),
+			new Process( array( 'curl -L https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar.asc -o ./.bin/wp-cli.phar.asc' ) ),
+			new Process( array( 'curl -L https://raw.githubusercontent.com/wp-cli/builds/gh-pages/wp-cli.pgp -o ./.bin/wp-cli.pgp | gpg --import ./.bin/wp-cli.pgp' ) ),
+			new Process( array( 'gpg --verify ./.bin/wp-cli.phar.asc ./.bin/wp-cli.phar || exit 1' ) ),
 		);
 
-		$exit_code = BatchCommands::run( $commands, $input, $output );
+		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 
 		$output->writeln( '' );
-		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
 		return $exit_code;

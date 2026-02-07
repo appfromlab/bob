@@ -11,9 +11,7 @@
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Composer\BatchCommands;
-use Appfromlab\Bob\Command\BumpVersionCommand;
-use Appfromlab\Bob\Command\MakePotCommand;
-use Appfromlab\Bob\Command\ReadmeGeneratorCommand;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
@@ -46,19 +44,21 @@ class ReleaseCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
+		$output->writeln( '<info>------ [START] ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		$commands = array(
-			new BuildCommand(),
-			new BumpVersionCommand(),
-			new ReadmeGeneratorCommand(),
-			new MakePotCommand(),
+			new ArrayInput( array( 'command' => 'afl:build' ) ),
+			new ArrayInput( array( 'command' => 'afl:bump-version' ) ),
+			new ArrayInput( array( 'command' => 'afl:readme-generator' ) ),
+			new ArrayInput( array( 'command' => 'afl:make-pot' ) ),
 		);
 
-		$exit_code = BatchCommands::run( $commands, $input, $output );
+		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 
 		$output->writeln( '' );
-		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
 		return $exit_code;

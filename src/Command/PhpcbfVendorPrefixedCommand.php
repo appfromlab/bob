@@ -14,6 +14,7 @@ use Appfromlab\Bob\Helper;
 use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
 
 /**
@@ -39,25 +40,33 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
-		$output->writeln( '<info>------ START ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
+		$output->writeln( '<info>------ [START] ' . __CLASS__ . '</info>' );
+		$output->writeln( '' );
 
 		// Get configuration.
 		$config = Helper::getConfig();
 
 		$commands = array(
-			array(
-				'php',
-				$config['paths']['plugin_vendor_dir'] . 'bin/phpcbf',
-				'--standard=' . $config['paths']['plugin_dir'] . '.phpcs.xml',
-				$config['paths']['plugin_vendor_prefixed_dir'] . 'composer',
-				$config['paths']['plugin_vendor_prefixed_dir'] . 'autoload.php',
+			new Process(
+				array(
+					'php',
+					$config['paths']['plugin_vendor_dir'] . 'bin/phpcbf',
+					'--standard=' . $config['paths']['plugin_dir'] . '.phpcs.xml',
+					$config['paths']['plugin_vendor_prefixed_dir'] . 'composer',
+					$config['paths']['plugin_vendor_prefixed_dir'] . 'autoload.php',
+				),
+				null,
+				array(
+					'AFL_BOB_EXIT_0' => true,
+				),
 			),
 		);
 
-		$exit_code = BatchCommands::run( $commands, $input, $output );
+		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 
 		$output->writeln( '' );
-		$output->writeln( '<info>------ END ' . __CLASS__ . '</info>' );
+		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
 		// Always exit 0 (force success because it may fail for Github Action).
