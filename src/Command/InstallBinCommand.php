@@ -58,10 +58,11 @@ class InstallBinCommand extends BaseCommand {
 		}
 
 		$commands = array(
-			new Process( array( 'curl -L https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -o ./.bin/wp-cli.phar' ) ),
-			new Process( array( 'curl -L https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar.asc -o ./.bin/wp-cli.phar.asc' ) ),
-			new Process( array( 'curl -L https://raw.githubusercontent.com/wp-cli/builds/gh-pages/wp-cli.pgp -o ./.bin/wp-cli.pgp | gpg --import ./.bin/wp-cli.pgp' ) ),
-			new Process( array( 'gpg --verify ./.bin/wp-cli.phar.asc ./.bin/wp-cli.phar || exit 1' ) ),
+			new Process( array( 'curl', '-L', 'https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar', '-o', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar' ) ),
+			new Process( array( 'curl', '-L', 'https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar.asc', '-o', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar.asc' ) ),
+			new Process( array( 'curl', '-L', 'https://raw.githubusercontent.com/wp-cli/builds/gh-pages/wp-cli.pgp', '-o', $config['paths']['plugin_bin_dir'] . 'wp-cli.pgp' ) ),
+			new Process( array( 'gpg', '--import', $config['paths']['plugin_bin_dir'] . 'wp-cli.pgp' ) ),
+			new Process( array( 'gpg', '--verify', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar.asc', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar' ) ),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
