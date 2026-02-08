@@ -31,7 +31,7 @@ class BuildCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:build' )
+		$this->setName( 'afl:bob:build' )
 			->setDescription( 'Perform build process.' );
 	}
 
@@ -64,9 +64,9 @@ class BuildCommand extends BaseCommand {
 					'--no-scripts',
 				)
 			),
-			new ArrayInput( array( 'command' => 'afl:delete-vendor-prefixed' ) ),
-			new ArrayInput( array( 'command' => 'afl:scope' ) ),
-			new ArrayInput( array( 'command' => 'afl:phpcbf-vendor-prefixed' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:delete-vendor-prefixed' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:scope' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:phpcbf-vendor-prefixed' ) ),
 			new Process(
 				array(
 					'composer',

@@ -25,7 +25,7 @@ use Composer\Command\BaseCommand;
 class PhpcbfVendorPrefixedCommand extends BaseCommand {
 
 	protected function configure(): void {
-		$this->setName( 'afl:phpcbf-vendor-prefixed' )
+		$this->setName( 'afl:bob:phpcbf-vendor-prefixed' )
 			->setDescription( 'Beautify vendor-prefixed composer folder.' );
 	}
 

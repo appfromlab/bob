@@ -22,7 +22,7 @@ class BumpVersionCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:bump-version' )
+		$this->setName( 'afl:bob:bump-version' )
 			->setDescription( 'Bump plugin version using value from plugin header.' );
 	}
 

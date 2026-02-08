@@ -27,7 +27,7 @@ class DeleteVendorPrefixedCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:delete-vendor-prefixed' )
+		$this->setName( 'afl:bob:delete-vendor-prefixed' )
 			->setDescription( 'Delete vendor-prefixed folder in the WordPress plugin folder.' );
 	}
 

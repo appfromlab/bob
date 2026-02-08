@@ -29,7 +29,7 @@ class PluginRenamerCopyConfigCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:plugin-renamer-copy-config' )
+		$this->setName( 'afl:bob:plugin-renamer-copy-config' )
 			->setDescription( 'Copy plugin renamer file to your WordPress plugin folder.' );
 	}
 

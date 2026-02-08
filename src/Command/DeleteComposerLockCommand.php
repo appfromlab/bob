@@ -27,7 +27,7 @@ class DeleteComposerLockCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:delete-composer-lock' )
+		$this->setName( 'afl:bob:delete-composer-lock' )
 			->setDescription( 'Delete composer.lock file in the WordPress plugin folder.' );
 	}
 

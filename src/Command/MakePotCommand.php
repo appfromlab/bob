@@ -30,7 +30,7 @@ class MakePotCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:make-pot' )
+		$this->setName( 'afl:bob:make-pot' )
 			->setDescription( 'Generate the plugin language POT file' );
 	}
 

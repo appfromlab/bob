@@ -29,7 +29,7 @@ class ReleaseCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:release' )
+		$this->setName( 'afl:bob:release' )
 			->setDescription( 'Perform the release process which builds the code, bump version, generate readme.txt and make-pot.' );
 	}
 
@@ -49,10 +49,10 @@ class ReleaseCommand extends BaseCommand {
 		$output->writeln( '' );
 
 		$commands = array(
-			new ArrayInput( array( 'command' => 'afl:build' ) ),
-			new ArrayInput( array( 'command' => 'afl:bump-version' ) ),
-			new ArrayInput( array( 'command' => 'afl:readme-generator' ) ),
-			new ArrayInput( array( 'command' => 'afl:make-pot' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:build' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:bump-version' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:readme-generator' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:make-pot' ) ),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );

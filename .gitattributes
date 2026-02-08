@@ -6,7 +6,6 @@
 /docs                           export-ignore
 /vendor                         export-ignore
 /vendor-bin                     export-ignore
-/vendor-bin/**/composer.lock    binary
 
 # Files
 /*.xml                          export-ignore

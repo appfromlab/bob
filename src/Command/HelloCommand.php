@@ -26,7 +26,7 @@ class HelloCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:hello' )
+		$this->setName( 'afl:bob:hello' )
 			->setDescription( 'Say hello' );
 	}
 
