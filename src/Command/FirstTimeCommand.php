@@ -29,7 +29,7 @@ class FirstTimeCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:first-time' )
+		$this->setName( 'afl:bob:first-time' )
 			->setDescription( 'Copy plugin-renamer-config.php and delete composer.lock file.' );
 	}
 
@@ -49,8 +49,8 @@ class FirstTimeCommand extends BaseCommand {
 		$output->writeln( '' );
 
 		$commands = array(
-			new ArrayInput( array( 'command' => 'afl:plugin-renamer-copy-config' ) ),
-			new ArrayInput( array( 'command' => 'afl:delete-composer-lock' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:plugin-renamer-copy-config' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:delete-composer-lock' ) ),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );

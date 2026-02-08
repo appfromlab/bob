@@ -36,7 +36,7 @@ class RequireDevGlobalCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:require-dev-global' )
+		$this->setName( 'afl:bob:require-dev-global' )
 			->setDescription( 'Add global composer packages for development.' );
 	}
 

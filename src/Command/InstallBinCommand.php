@@ -30,7 +30,7 @@ class InstallBinCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:install-bin' )
+		$this->setName( 'afl:bob:install-bin' )
 			->setDescription( 'Install required bin files for local development.' );
 	}
 

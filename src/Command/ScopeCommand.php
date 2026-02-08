@@ -30,7 +30,7 @@ class ScopeCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:scope' )
+		$this->setName( 'afl:bob:scope' )
 			->setDescription( 'Perform php-scoper on vendor folder.' );
 	}
 

@@ -28,7 +28,7 @@ class PluginRenamerCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:plugin-renamer' )
+		$this->setName( 'afl:bob:plugin-renamer' )
 			->setDescription( 'Rename a plugin using the plugin renamer config file.' );
 	}
 
