@@ -41,12 +41,10 @@ class BatchCommands {
 	 */
 	public static function run( Application $application, array $commands, OutputInterface $output ): int {
 
+		$exit_code = 0;
+
 		// Get configuration.
 		$config = Helper::getConfig();
-
-		// Change to plugin directory to ensure correct paths.
-		$previous_cwd = getcwd();
-		chdir( $config['paths']['plugin_dir'] );
 
 		try {
 
@@ -90,11 +88,8 @@ class BatchCommands {
 			$output->writeln( '<error>' . $th->getMessage() . '</error>' );
 
 			return $th->getCode();
-		} finally {
-			// Change to previous working directory.
-			chdir( $previous_cwd );
 		}
 
-		return 0;
+		return $exit_code;
 	}
 }
