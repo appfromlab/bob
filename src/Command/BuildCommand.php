@@ -58,11 +58,11 @@ class BuildCommand extends BaseCommand {
 				array(
 					'composer',
 					'dump-autoload',
-					'-d',
-					$config['paths']['plugin_dir'],
 					'--no-dev',
 					'--no-scripts',
-				)
+				),
+				// set current working directory.
+				$config['paths']['plugin_dir']
 			),
 			new ArrayInput( array( 'command' => 'afl:bob:delete-vendor-prefixed' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:scope' ) ),
@@ -73,7 +73,9 @@ class BuildCommand extends BaseCommand {
 					'dump-autoload',
 					'-d',
 					$config['paths']['plugin_dir'],
-				)
+				),
+				// set current working directory.
+				$config['paths']['plugin_dir']
 			),
 		);
 

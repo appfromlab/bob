@@ -60,6 +60,8 @@ class ScopeCommand extends BaseCommand {
 					'add-prefix',
 					'--config=' . $config['paths']['plugin_dir'] . '.scoper.inc.php',
 				),
+				// set current working directory.
+				$config['paths']['plugin_dir']
 			),
 		);
 
