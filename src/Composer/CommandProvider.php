@@ -18,6 +18,7 @@ use Appfromlab\Bob\Command\FirstTimeCommand;
 use Appfromlab\Bob\Command\HelloCommand;
 use Appfromlab\Bob\Command\InstallBinCommand;
 use Appfromlab\Bob\Command\MakePotCommand;
+use Appfromlab\Bob\Command\PhpcbfCommand;
 use Appfromlab\Bob\Command\PhpcbfVendorPrefixedCommand;
 use Appfromlab\Bob\Command\PluginRenamerCommand;
 use Appfromlab\Bob\Command\PluginRenamerCopyConfigCommand;
@@ -50,6 +51,7 @@ class CommandProvider implements CommandProviderCapability {
 			new HelloCommand(),
 			new InstallBinCommand(),
 			new MakePotCommand(),
+			new PhpcbfCommand(),
 			new PhpcbfVendorPrefixedCommand(),
 			new PluginRenamerCommand(),
 			new PluginRenamerCopyConfigCommand(),
