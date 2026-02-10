@@ -1,42 +1,26 @@
 # Steps to Prepare for a new WordPress Plugin
 
-## Step 1: Install Composer
+Run the following commands in your terminal from the root folder of your WordPress plugin.
 
-- Visit [getcomposer.org](https://getcomposer.org/) and follow the installation instructions for your operating system.
-- Note that composer commands have to be run in the terminal from the plugin root folder.
-- Check that composer is installed successfully.
+## Step 1: Run the first time command
 
-```bash
-composer -V
-```
-
-## Step 2: Run the first time command
-
-A plugin renamer config file will be copied over to the `.afl-extra/config` folder.
+A plugin renamer config (plugin-renamer-config.php) file will be copied over to your plugin `.afl-extra/config` folder.
 
 ```bash
-composer afl:first-time
+composer bob afl:bob:new-plugin
 ```
 
-## Step 3: Edit the .afl-extra/config/plugin-renamer-config.php
+## Step 2: Edit the .afl-extra/config/plugin-renamer-config.php
 
 To rename your plugin, rename the contents in the `.afl-extra/config/plugin-renamer-config.php` file then run the commands below in the terminal.
 
-## Step 4: Run the plugin renamer tool
+## Step 3: Run the plugin renamer tool
 
 ```bash
-composer afl:plugin-rename
+composer bob afl:bob:plugin-rename
 ```
 
-## Step 5: Install first time dependencies
-
-```bash
-composer afl:install-global
-```
-
-```bash
-composer afl:install-local-phar
-```
+## Step 4: Install first time dependencies
 
 Install production and dev packages:
 
@@ -44,37 +28,24 @@ Install production and dev packages:
 composer install
 ```
 
-## Step 6: Run build
+## Step 5: Run build
 
-Run this command each time you add or remove files in the `src` folder.
+Run the build command for the first time and each time you add or remove files in the `src` folder.
 
 ```bash
 composer afl:build
 ```
 
-If you had add / remove a new composer package, run the command:
+If you had add / remove a new composer dependency package, run the command:
 
 ```bash
 composer update
-composer afl:build
-```
-
-## Step 7: Read and understand the Sample Module
-
-Once you have understand the module, delete the `Sample` module folder.
-
-Then remove `Sample_Service_Provider` from [config/providers.php](../../config/providers.php) providers array:
-
-```php
-'providers' => array(
-	//MyVendorName\AFL_Plugin_Boilerplate\Modules\Sample\Sample_Service_Provider::class
-),
 ```
 
 ## Step 8: Start Coding
 
 - You can now start coding in the src folder.
-- Register new modules in the [config/provider.php](../../config/provider.php) file.
+- Register new modules in the plugin's `config/provider.php` file.
 
 Run this command each time you add or remove files in the `src` folder.
 

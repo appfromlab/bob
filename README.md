@@ -12,7 +12,6 @@ First it is recommended to use [bamarni/composer-bin-plugin](https://github.com/
 
 ```bash
 composer require --dev bamarni/composer-bin-plugin:"~1.9.0"
-
 ```
 
 Then install this package as a dev dependency in the vendor-bin/appfromlab-bob folder.
@@ -27,7 +26,9 @@ Add a script to your plugin's `composer.json` file to run Bob commands easily.
 
 ```json
 "scripts": {
-	"bob": "@composer bin appfromlab-bob --ansi"
+	"bob": "@composer bin appfromlab-bob --ansi",
+	"afl:build": "composer bob afl:build",
+	"afl:release": "composer bob afl:release",
 }
 ```
 
