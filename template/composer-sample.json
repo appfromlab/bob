@@ -6,6 +6,6 @@
 		}
 	},
 	"scripts": {
-
+		"bob": "@composer bin appfromlab-bob --ansi"
 	}
 }

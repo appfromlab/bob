@@ -19,7 +19,7 @@ use Composer\Command\BaseCommand;
 /**
  * Initialize plugin for first-time use
  */
-class FirstTimeCommand extends BaseCommand {
+class NewPluginCommand extends BaseCommand {
 
 	/**
 	 * Configure the command
@@ -29,8 +29,8 @@ class FirstTimeCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:bob:first-time' )
-			->setDescription( 'Copy plugin-renamer-config.php and delete composer.lock file.' );
+		$this->setName( 'afl:bob:new-plugin' )
+			->setDescription( 'Prepare project files for new plugin.' );
 	}
 
 	/**
@@ -51,6 +51,8 @@ class FirstTimeCommand extends BaseCommand {
 		$commands = array(
 			new ArrayInput( array( 'command' => 'afl:bob:plugin-renamer-copy-config' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:delete-composer-lock' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:install-wpcli' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:require-dev-global' ) ),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );

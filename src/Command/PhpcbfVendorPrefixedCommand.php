@@ -26,7 +26,7 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 
 	protected function configure(): void {
 		$this->setName( 'afl:bob:phpcbf-vendor-prefixed' )
-			->setDescription( 'Beautify vendor-prefixed composer folder.' );
+			->setDescription( 'Beautify only the vendor-prefixed composer folder and autoload.php.' );
 	}
 
 	/**

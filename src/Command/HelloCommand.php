@@ -9,6 +9,7 @@
 
 namespace Appfromlab\Bob\Command;
 
+use Appfromlab\Bob\Helper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
@@ -52,6 +53,12 @@ class HelloCommand extends BaseCommand {
 		$output->writeln( '<question>This is a question message</question>' );
 		$output->writeln( '<warning>This is a warning message</warning>' );
 		$output->writeln( '<error>This is an error message</error>' );
+
+		$config = Helper::getConfig();
+
+		$output->writeln( 'Plugin Folder Name: <info>' . $config['plugin_folder_name'] . '</info>' );
+		$output->writeln( 'Plugin Folder Path: ' . $config['paths']['plugin_dir'] );
+		$output->writeln( 'Plugin File Path: ' . $config['paths']['plugin_file'] );
 
 		$output->writeln( '' );
 		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
