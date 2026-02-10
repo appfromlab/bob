@@ -21,7 +21,7 @@ use Composer\Command\BaseCommand;
  * It will compile a WordPress plugin readme.txt file using
  * the plugin headers data and content in .plugin-readme folder.
  */
-class ReadmeGeneratorCommand extends BaseCommand {
+class GenerateReadmeCommand extends BaseCommand {
 
 	/**
 	 * Configure the command

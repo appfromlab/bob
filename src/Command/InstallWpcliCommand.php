@@ -20,7 +20,7 @@ use Composer\Command\BaseCommand;
 /**
  * Download and install required binary tools
  */
-class InstallBinCommand extends BaseCommand {
+class InstallWpcliCommand extends BaseCommand {
 
 	/**
 	 * Configure the command
@@ -30,8 +30,8 @@ class InstallBinCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:bob:install-bin' )
-			->setDescription( 'Install required bin files for local development.' );
+		$this->setName( 'afl:bob:install-wpcli' )
+			->setDescription( 'Install WP-CLI for WP commands.' );
 	}
 
 	/**
