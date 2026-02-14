@@ -53,8 +53,7 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 					'php',
 					$config['paths']['plugin_vendor_dir'] . 'bin/phpcbf',
 					'--standard=' . $config['paths']['plugin_dir'] . '.phpcs.xml',
-					$config['paths']['plugin_vendor_prefixed_dir'] . 'composer',
-					$config['paths']['plugin_vendor_prefixed_dir'] . 'autoload.php',
+					$config['paths']['plugin_vendor_prefixed_dir'],
 				),
 				null,
 				array(
