@@ -59,7 +59,7 @@ class BatchCommands {
 					$exit_code = $application->run( $single_command, $output );
 
 					if ( 0 !== $exit_code ) {
-						throw new \Error( 'Command Failed: ' . (string) $single_command, $exit_code );
+						throw new \Error( '<error>Command Failed:</error> ' . (string) $single_command, $exit_code );
 					}
 				} elseif ( is_a( $single_command, 'Symfony\Component\Process\Process' ) ) {
 
@@ -77,15 +77,15 @@ class BatchCommands {
 					if ( is_array( $env ) && array_key_exists( 'AFL_BOB_FORCE_EXIT_0', $env ) ) {
 						$exit_code = 0;
 					} elseif ( ! $single_command->isSuccessful() ) {
-						throw new \Error( 'Process Failed: ' . $single_command->getCommandLine(), $exit_code );
+						throw new \Error( '<error>Process Failed:</error> ' . $single_command->getCommandLine(), $exit_code );
 					}
 				} else {
-					throw new \Error( 'Command is not of type ArrayInput or Process.', 1 );
+					throw new \Error( '<error>Command is not of type ArrayInput or Process.</error>', 1 );
 				}
 			}
 		} catch ( \Throwable $th ) {
 
-			$output->writeln( '<error>' . $th->getMessage() . '</error>' );
+			$output->writeln( $th->getMessage() );
 
 			return $th->getCode();
 		}
