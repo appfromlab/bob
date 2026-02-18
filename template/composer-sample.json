@@ -2,7 +2,13 @@
 	"extra": {
 		"appfromlab/bob": {
 			"plugin_folder_name": "",
-			"plugin_version_constant": ""
+			"plugin_version_constant": "",
+			"php_scoper": {
+				"namespace_prefix": "MyVendorName\\AFL_Plugin_Boilerplate\\Vendor\\",
+				"exclude_namespaces": [
+					"MyVendorName\\AFL_Plugin_Boilerplate\\"
+				]
+			}
 		}
 	},
 	"scripts": {

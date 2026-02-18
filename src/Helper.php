@@ -10,6 +10,8 @@
 
 namespace Appfromlab\Bob;
 
+use Appfromlab\Bob\HelperScoper;
+
 /**
  * Helper class for tools
  *
@@ -355,54 +357,14 @@ class Helper {
 	 */
 	public static function getScoperConfig() {
 
-		$config = array(
-			'excluded_folders' => self::getScoperExcludedFolders(),
-		);
-
-		return $config;
-	}
-
-	/**
-	 * Get list of folders excluded from PHP-Scoper
-	 *
-	 * Reads the composer installed.php file and extracts package names that are
-	 * marked as dev requirements, which should be excluded from scoping.
-	 *
-	 * @return array List of package names to exclude from scoping.
-	 */
-	public static function getScoperExcludedFolders() {
-		$exclude_folders = array();
-
 		$config = self::getConfig();
 
-		// get packages from installed.php.
-		$composer_installed_file_path = $config['paths']['plugin_vendor_dir'] . 'composer/installed.php';
+		$php_scoper_config = array(
+			'namespace_prefix'    => $config['php_scoper']['namespace_prefix'] ?? 'AFL_Bob\\Vendor\\',
+			'excluded_folders'    => HelperScoper::getExcludedFolders(),
+			'excluded_namespaces' => HelperScoper::getExcludedNamespaces(),
+		);
 
-		try {
-			if ( file_exists( $composer_installed_file_path ) ) {
-
-				$installed_packages = include $composer_installed_file_path;
-
-				if ( empty( $installed_packages['root']['name'] ) || ! isset( $installed_packages['versions'] ) ) {
-					throw new \Exception( 'ERROR: Cannot validate /vendor/composer/installed.php.' );
-				}
-
-				if ( is_array( $installed_packages['versions'] ) ) {
-					foreach ( $installed_packages['versions'] as $package_index => $package ) {
-
-						if ( ! empty( $package['dev_requirement'] ) ) {
-							$exclude_folders[] = $package_index;
-						}
-					}
-				}
-			} else {
-				throw new \Exception( 'ERROR: /vendor/composer/installed.php not found.' );
-			}
-		} catch ( \Throwable $th ) {
-			echo $th->getMessage() . "\n";
-			exit( 1 );
-		}
-
-		return $exclude_folders;
+		return $php_scoper_config;
 	}
 }
