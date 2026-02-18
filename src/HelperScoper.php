@@ -24,7 +24,7 @@ class HelperScoper {
 	 *
 	 * @return array List of package names to exclude from scoping.
 	 */
-	public static function getExcludedFolders() {
+	public static function getExcludeFolders() {
 		$exclude_folders = array();
 
 		$config = Helper::getConfig();
@@ -68,7 +68,7 @@ class HelperScoper {
 	 *
 	 * @return array List of namespaces to exclude from scoping.
 	 */
-	public static function getExcludedNamespaces() {
+	public static function getExcludeNamespaces() {
 
 		$excluded_namespaces = array(
 			'Composer\\',
