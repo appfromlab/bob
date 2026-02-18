@@ -1,16 +1,8 @@
 <?php
 /**
- * PHP-Scoper Configuration Template
+ * Configuration for PHP-Scoper.
  *
- * This file configures PHP-Scoper for prefixing vendor dependencies.
- * PHP-Scoper automatically prefixes all dependencies to avoid conflicts
- * with plugins that may depend on the same packages.
- *
- * @package Appfromlab\Bob\Template
- * @version 20260206000
- *
- * The configuration is dynamically generated using Helper::getScoperConfig()
- * to determine which packages should be excluded from scoping (dev dependencies).
+ * @version 20260218000
  */
 
 declare(strict_types=1);
@@ -26,24 +18,19 @@ use Appfromlab\Bob\Helper;
 /**
  * Get PHP-Scoper configuration using appfromlab/bob.
  *
- * Loads and configures the Helper class to retrieve scoper configuration settings,
- * including details about which vendor packages should be excluded from scoping
- * (typically dev dependencies).
- *
- * @return array PHP-Scoper configuration array with scope settings,
- *              output directory, finders, and excluded symbols.
- * @throws \Exception If the Helper class cannot be loaded.
+ * @return array
  */
 function afl_scoper_get_config(): array {
 
 	$afl_bob_helper_path_list = array(
-		__DIR__ . '/vendor-bin/appfromlab-bob/vendor/appfromlab/bob/src/helper.php',
-		__DIR__ . '/vendor/appfromlab/bob/src/helper.php',
+		__DIR__ . '/vendor-bin/appfromlab-bob/vendor/appfromlab/bob/src/Helper.php',
+		__DIR__ . '/vendor/appfromlab/bob/src/Helper.php',
 	);
 
 	foreach ( $afl_bob_helper_path_list as $afl_bob_helper_path ) {
 		if ( file_exists( $afl_bob_helper_path ) ) {
-			require_once $afl_bob_helper_path;
+			require $afl_bob_helper_path;
+			require dirname( $afl_bob_helper_path ) . DIRECTORY_SEPARATOR . 'HelperScoper.php';
 			break;
 		}
 	}
@@ -69,11 +56,11 @@ return array(
 	// will be generated instead.
 	//
 	// For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#prefix.
-	'prefix'                  => 'MyVendorName\\AFL_Plugin_Boilerplate\\Vendor',
+	'prefix'                  => $afl_scoper_config['namespace_prefix'],
 
 	// The base output directory for the prefixed files.
 	// This will be overridden by the 'output-dir' command line option if present.
-	'output-dir'              => 'vendor-prefixed',
+	'output-dir'              => __DIR__ . DIRECTORY_SEPARATOR . 'vendor-prefixed',
 
 	// By default when running php-scoper add-prefix, it will prefix all relevant code found in the current working
 	// directory. You can however define which files should be scoped by defining a collection of Finders in the
@@ -87,7 +74,7 @@ return array(
 		->files()
 		->in( 'vendor' )
 		->name( '*.php' )
-		->exclude( $afl_scoper_config['excluded_folders'] ),
+		->exclude( $afl_scoper_config['exclude_folders'] ),
 	),
 
 	// List of excluded files, i.e. files for which the content will be left untouched.
@@ -110,15 +97,16 @@ return array(
 	// heart contents.
 	//
 	// For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#patchers.
-	'patchers'                => array(),
+	'patchers'                => array(
+		function ( string $filePath, string $prefix, string $content ): string {
+			return $content;
+		},
+	),
 
 	// List of symbols to consider internal i.e. to leave untouched.
 	//
 	// For more information see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#excluded-symbols.
-	'exclude-namespaces'      => array(
-		'Composer\\',
-		'MyVendorName\\AFL_Plugin_Boilerplate\\',
-	),
+	'exclude-namespaces'      => $afl_scoper_config['exclude_namespaces'],
 	'exclude-classes'         => array(
 		// 'ReflectionClassConstant',
 	),
