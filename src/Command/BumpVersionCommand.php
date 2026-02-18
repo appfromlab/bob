@@ -46,20 +46,32 @@ class BumpVersionCommand extends BaseCommand {
 		$output->writeln( "Plugin File: {$config['paths']['plugin_file']}" );
 		$output->writeln( "Plugin Version Constant: {$config['plugin_version_constant']}" );
 
-		$files_regex_pattern = array(
+		// Define regex patterns for version bumping.
+		$regex_pattern_list = array(
 			$config['paths']['plugin_file'] => array(
 				'/define\(\s*[\'"]' . $config['plugin_version_constant'] . '[\'"]\s*,\s*[\'"][^\'"]*[\'"]\s*\);/',
 				"define( '{$config['plugin_version_constant']}', '{$plugin_headers['Version']}' );",
 			),
 		);
 
-		Helper::replaceFileContentWithRegex( $files_regex_pattern, $output );
+		// Load the WordPress plugin .afl-extra/config/bump-version-pattern-config.php and merge any additional regex patterns defined there.
+		$extra_pattern_list = array();
 
-		// check for extra custom file from .afl-extra/tools folder.
-		$custom_config_file_path = $config['paths']['plugin_extra_tools_dir'] . 'bump-version-extra.php';
+		$extra_pattern_config_file_path = $config['paths']['plugin_extra_config_dir'] . 'bump-version-pattern-config.php';
 
-		if ( file_exists( $custom_config_file_path ) ) {
-			include $custom_config_file_path;
+		if ( file_exists( $extra_pattern_config_file_path ) ) {
+			$extra_pattern_list = include $extra_pattern_config_file_path;
+		}
+
+		$regex_pattern_list = array_merge( $regex_pattern_list, $extra_pattern_list );
+
+		Helper::replaceFileContentWithRegex( $regex_pattern_list );
+
+		// Run the WordPress .afl-extra/tools/bump-version-tool.php for any custom operations.
+		$bump_version_extra_tool_file_path = $config['paths']['plugin_extra_tools_dir'] . 'bump-version-tool.php';
+
+		if ( file_exists( $bump_version_extra_tool_file_path ) ) {
+			include $bump_version_extra_tool_file_path;
 		}
 
 		$output->writeln( '' );
