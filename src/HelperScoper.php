@@ -76,8 +76,8 @@ class HelperScoper {
 
 		$config = Helper::getConfig();
 
-		if ( is_array( $config['php_scoper']['excluded_namespaces'] ) && ! empty( $config['php_scoper']['excluded_namespaces'] ) ) {
-			$excluded_namespaces = array_merge( $excluded_namespaces, $config['php_scoper']['excluded_namespaces'] );
+		if ( ! empty( $config['php_scoper']['exclude_namespaces'] ) && is_array( $config['php_scoper']['exclude_namespaces'] ) ) {
+			$excluded_namespaces = array_merge( $excluded_namespaces, $config['php_scoper']['exclude_namespaces'] );
 		}
 
 		return $excluded_namespaces;
