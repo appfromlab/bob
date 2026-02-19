@@ -83,6 +83,7 @@ class PluginRenamerCommand extends BaseCommand {
 		}
 
 		// Auto create name for dash.
+		$default_config['name_list']['plugin_name_lowercase_dashes'] = str_replace( '_', '-', $default_config['name_list']['plugin_name_lowercase_underscore'] );
 		$new_config['name_list']['plugin_name_lowercase_dashes'] = str_replace( '_', '-', $new_config['name_list']['plugin_name_lowercase_underscore'] );
 
 		// Check missing folder_list in user config.

@@ -1,12 +1,12 @@
 {
 	"extra": {
 		"appfromlab/bob": {
-			"plugin_folder_name": "",
-			"plugin_version_constant": "",
+			"plugin_folder_name": "afl-plugin-boilerplate",
+			"plugin_version_constant": "AFL_PLUGIN_BOILERPLATE_VERSION",
 			"php_scoper": {
 				"namespace_prefix": "MyVendorName\\AFL_Plugin_Boilerplate\\Vendor",
 				"exclude_namespaces": [
-					"MyVendorName\\AFL_Plugin_Boilerplate\\"
+					"MyVendorName\\AFL_Plugin_Boilerplate"
 				]
 			}
 		}

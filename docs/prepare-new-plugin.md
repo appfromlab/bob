@@ -2,30 +2,32 @@
 
 Run the following commands in your terminal from the root folder of your WordPress plugin.
 
-## Step 1: Run the first time command
+## Step 1: Install project packages
 
-A plugin renamer config (plugin-renamer-config.php) file will be copied over to your plugin `.afl-extra/config` folder.
+```bash
+composer install
+```
+
+## Step 2: Begin the new plugin process
+
+This will prepare the project folder for a new plugin.
 
 ```bash
 composer bob afl:bob:new-plugin
 ```
 
-## Step 2: Edit the .afl-extra/config/plugin-renamer-config.php
+## Step 3: Edit the .afl-extra/config/plugin-renamer-config.php
 
-To rename your plugin, rename the contents in the `.afl-extra/config/plugin-renamer-config.php` file then run the commands below in the terminal.
+A plugin renamer config (plugin-renamer-config.php) file will be copied over to your plugin `.afl-extra/config` folder.
 
-## Step 3: Run the plugin renamer tool
+Edit the configurations in the config file to name your new plugin.
 
-```bash
-composer bob afl:bob:plugin-rename
-```
+## Step 4: Run the plugin renamer tool
 
-## Step 4: Install first time dependencies
-
-Install production and dev packages:
+The plugin renamer command will use the config file above to rename the plugin files.
 
 ```bash
-composer install
+composer bob afl:bob:plugin-renamer
 ```
 
 ## Step 5: Run build
@@ -42,7 +44,7 @@ If you had add / remove a new composer dependency package, run the command:
 composer update
 ```
 
-## Step 8: Start Coding
+## Step 5: Start Coding
 
 - You can now start coding in the src folder.
 - Register new modules in the plugin's `config/provider.php` file.
@@ -53,6 +55,6 @@ Run this command each time you add or remove files in the `src` folder.
 composer afl:build
 ```
 
-## Step 9: Preparing a new Plugin Release Version
+## Step 6: Preparing a new Plugin Release Version
 
 Follow the steps in [release.md](release.md) file.
