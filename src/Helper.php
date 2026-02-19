@@ -360,9 +360,11 @@ class Helper {
 		$config = self::getConfig();
 
 		$php_scoper_config = array(
-			'namespace_prefix'   => $config['php_scoper']['namespace_prefix'] ?? 'AFL_Bob\\Vendor\\',
+			'namespace_prefix'   => HelperScoper::getNamespacePrefix(),
 			'exclude_folders'    => HelperScoper::getExcludeFolders(),
 			'exclude_namespaces' => HelperScoper::getExcludeNamespaces(),
+			'exclude_classes'    => HelperScoper::getExcludeClasses(),
+			'patchers'           => HelperScoper::getPatchers(),
 		);
 
 		return $php_scoper_config;

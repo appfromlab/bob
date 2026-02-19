@@ -97,19 +97,13 @@ return array(
 	// heart contents.
 	//
 	// For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#patchers.
-	'patchers'                => array(
-		function ( string $filePath, string $prefix, string $content ): string {
-			return $content;
-		},
-	),
+	'patchers'                => $afl_scoper_config['patchers'],
 
 	// List of symbols to consider internal i.e. to leave untouched.
 	//
 	// For more information see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#excluded-symbols.
 	'exclude-namespaces'      => $afl_scoper_config['exclude_namespaces'],
-	'exclude-classes'         => array(
-		// 'ReflectionClassConstant',
-	),
+	'exclude-classes'         => $afl_scoper_config['exclude_classes'],
 	'exclude-functions'       => array(
 		// 'mb_str_split',
 	),
