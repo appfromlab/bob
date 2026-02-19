@@ -18,7 +18,7 @@
 return array(
 	'name_list'   => array(
 		'composer_package_name'            => 'appfromlab/afl-plugin-boilerplate',
-		'php_namespace_full_name'          => 'MyVendorName\\AFL_Plugin_Boilerplate',
+		'php_namespace_full_name'          => 'MyVendorName\\AFL_Plugin_Boilerplate', // pascal case with double backslash.
 		'php_namespace_vendor_name'        => 'MyVendorName', // pascal case, no spaces, underscore allowed.
 		'php_namespace_package_name'       => 'AFL_Plugin_Boilerplate', // pascal case with underscore.
 		'plugin_name'                      => 'AFL Plugin Boilerplate', // pascal case with spaces.
