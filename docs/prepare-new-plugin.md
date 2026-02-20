@@ -24,10 +24,12 @@ Edit the configurations in the config file to name your new plugin.
 
 ## Step 4: Run the plugin renamer tool
 
-The plugin renamer command will use the config file above to rename the plugin files.
+- The plugin renamer command will use the config file above to rename the plugin files.
+- Then run composer update to update the composer.lock file.
 
 ```bash
 composer bob afl:bob:plugin-renamer
+composer update
 ```
 
 ## Step 5: Run build
