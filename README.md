@@ -17,7 +17,7 @@ composer require --dev bamarni/composer-bin-plugin:"~1.9.0"
 Then install this package as a dev dependency in the vendor-bin/appfromlab-bob folder.
 
 ```bash
-composer bin appfromlab-bob require --dev appfromlab/bob:"~0.2.0"
+composer bin appfromlab-bob require --dev appfromlab/bob:"<1.0.0"
 ```
 
 ## List of Commands

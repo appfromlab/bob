@@ -1,17 +1,31 @@
 {
-	"extra": {
-		"appfromlab/bob": {
-			"plugin_folder_name": "afl-plugin-boilerplate",
-			"plugin_version_constant": "AFL_PLUGIN_BOILERPLATE_VERSION",
-			"php_scoper": {
-				"namespace_prefix": "MyVendorName\\AFL_Plugin_Boilerplate\\Vendor",
-				"exclude_namespaces": [
-					"MyVendorName\\AFL_Plugin_Boilerplate"
-				]
-			}
-		}
-	},
-	"scripts": {
-		"bob": "@composer bin appfromlab-bob --ansi"
-	}
+    "extra": {
+        "appfromlab/bob": {
+            "plugin_folder_name": "afl-plugin-boilerplate",
+            "plugin_version_constant": "AFL_PLUGIN_BOILERPLATE_VERSION",
+            "php_scoper": {
+                "namespace_prefix": "MyVendorName\\AFL_Plugin_Boilerplate\\Vendor",
+                "exclude_namespaces": [
+                    "MyVendorName\\AFL_Plugin_Boilerplate"
+                ]
+            }
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@composer bin all install"
+        ],
+        "post-update-cmd": [
+            "@composer bin all update"
+        ],
+        "afl:build": [
+            "@bob afl:bob:build"
+        ],
+        "afl:release": [
+            "@bob afl:bob:release"
+        ],
+        "bob": [
+            "@composer bin appfromlab-bob --ansi"
+        ]
+    }
 }
