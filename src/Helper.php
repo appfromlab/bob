@@ -93,7 +93,9 @@ class Helper {
 				'plugin_readme_file'         => $plugin_dir . 'readme.txt',
 				'plugin_vendor_dir'          => $plugin_dir . 'vendor' . DIRECTORY_SEPARATOR,
 				'plugin_vendor_prefixed_dir' => $plugin_dir . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
-				'plugin_scoper_config_file'  => $plugin_dir . 'scoper.inc.php',
+				'plugin_scoper_build_dir'    => $plugin_dir . '.afl-scoper-build' . DIRECTORY_SEPARATOR,
+				'plugin_scoper_stage_1_config_file'  => $plugin_dir . '.scoper.1.php',
+				'plugin_scoper_stage_2_config_file'  => $plugin_dir . '.scoper.2.php',
 			);
 		}
 
@@ -230,8 +232,7 @@ class Helper {
 	 * Performs regex-based find and replace on one or more files and outputs the results.
 	 * Exits with error if pattern match fails.
 	 *
-	 * @param array $files_regex_pattern Associative array with format:
-	 *                                   'file_path' => array( 'regex_pattern', 'replacement_value' )
+	 * @param array $files_regex_pattern Associative array with format: 'file_path' => array( 'regex_pattern', 'replacement_value' ).
 	 * @return void
 	 */
 	public static function replaceFileContentWithRegex( $files_regex_pattern ) {
@@ -346,27 +347,5 @@ class Helper {
 		}
 
 		return $exit_code ? false : true;
-	}
-
-	/**
-	 * Get PHP-Scoper configuration
-	 *
-	 * Retrieves configuration for PHP-Scoper including list of folders to exclude.
-	 *
-	 * @return array Scoper configuration array.
-	 */
-	public static function getScoperConfig() {
-
-		$config = self::getConfig();
-
-		$php_scoper_config = array(
-			'namespace_prefix'   => HelperScoper::getNamespacePrefix(),
-			'exclude_folders'    => HelperScoper::getExcludeFolders(),
-			'exclude_namespaces' => HelperScoper::getExcludeNamespaces(),
-			'exclude_classes'    => HelperScoper::getExcludeClasses(),
-			'patchers'           => HelperScoper::getPatchers(),
-		);
-
-		return $php_scoper_config;
 	}
 }
