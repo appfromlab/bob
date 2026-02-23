@@ -17,6 +17,52 @@ use Appfromlab\Bob\Helper;
 class HelperScoper {
 
 	/**
+	 * Get PHP-Scoper configuration Stage 1
+	 *
+	 * Retrieves configuration for PHP-Scoper including list of folders to exclude.
+	 *
+	 * @return array Scoper configuration array.
+	 */
+	public static function getConfigStage1() {
+
+		$config = Helper::getConfig();
+
+		$php_scoper_config = array(
+			'prefix'             => self::getNamespacePrefix(),
+			'output-dir'         => $config['paths']['plugin_scoper_build_dir'],
+			'exclude-namespaces' => self::getExcludeNamespaces(),
+			'exclude-classes'    => self::getExcludeClasses(),
+			'patchers'           => self::getPatchersStage1(),
+			'finders'            => self::getFindersStage1(),
+		);
+
+		return $php_scoper_config;
+	}
+
+	/**
+	 * Get PHP-Scoper configuration Stage 2
+	 *
+	 * Retrieves configuration for PHP-Scoper including list of folders to exclude.
+	 *
+	 * @return array Scoper configuration array.
+	 */
+	public static function getConfigStage2() {
+
+		$config = Helper::getConfig();
+
+		$php_scoper_config = array(
+			'prefix'             => self::getNamespacePrefix(),
+			'output-dir'         => $config['paths']['plugin_scoper_build_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
+			'exclude-namespaces' => self::getExcludeNamespaces(),
+			'exclude-classes'    => self::getExcludeClasses(),
+			'patchers'           => self::getPatchersStage2(),
+			'finders'            => self::getFindersStage2(),
+		);
+
+		return $php_scoper_config;
+	}
+
+	/**
 	 * Get the namespace prefix for PHP-Scoper
 	 *
 	 * Retrieves the namespace prefix from the plugin configuration, or returns a default value if not set.
@@ -36,9 +82,18 @@ class HelperScoper {
 	 * marked as dev requirements, which should be excluded from scoping.
 	 *
 	 * @return array List of package names to exclude from scoping.
+	 * @throws \Exception If the installed.php file cannot be read or is invalid.
 	 */
 	public static function getExcludeFolders() {
-		$exclude_folders = array();
+
+		$exclude_folders = array(
+			'bin',
+			'vendor-bin',
+			'test',
+			'tests',
+			'docs',
+			'docs',
+		);
 
 		$config = Helper::getConfig();
 
@@ -95,20 +150,39 @@ class HelperScoper {
 	}
 
 	/**
-	 * Get list of patchers for PHP-Scoper
+	 * Get list of patchers for PHP-Scoper Stage 1
 	 *
 	 * Defines a list of callback functions that can modify the content of files during the scoping process.
 	 * This allows for custom adjustments to be made to specific files, such as fixing class references in autoload files.
 	 *
 	 * @return array List of patcher callback functions.
 	 */
-	public static function getPatchers(){
+	public static function getPatchersStage1(){
 
 		$config = Helper::getConfig();
 
 		return array(
 			function (string $filePath, string $prefix, string $content) use ( $config ): string {
-				if ( $config['paths']['plugin_vendor_dir'] . 'composer/autoload_real.php' === $filePath ) {
+				return $content;
+			},
+		);
+	}
+
+	/**
+	 * Get list of patchers for PHP-Scoper Stage 2
+	 *
+	 * Defines a list of callback functions that can modify the content of files during the scoping process.
+	 * This allows for custom adjustments to be made to specific files, such as fixing class references in autoload files.
+	 *
+	 * @return array List of patcher callback functions.
+	 */
+	public static function getPatchersStage2(){
+
+		$config = Helper::getConfig();
+
+		return array(
+			function (string $filePath, string $prefix, string $content) use ( $config ): string {
+				if ( $config['paths']['plugin_scoper_build_dir'] . 'vendor/composer/autoload_real.php' === $filePath ) {
 					$content = str_replace(
 						"'Composer\\Autoload\\ClassLoader'",
 						"'" . $config['php_scoper']['namespace_prefix'] . "\\Composer\\Autoload\\ClassLoader'",
@@ -141,5 +215,46 @@ class HelperScoper {
 		}
 
 		return $exclude_classes;
+	}
+
+	/**
+	 * Get list of finders for PHP-Scoper Stage 1
+	 *
+	 * Defines a list of Symfony Finder instances that specify which files should be processed by PHP-Scoper.
+	 * This allows for precise control over which files are included in the scoping process, such as only processing PHP files in the vendor directory.
+	 *
+	 * @return array List of Symfony Finder instances.
+	 */
+	public static function getFindersStage1() {
+
+		$config = Helper::getConfig();
+
+		return array(
+			\Isolated\Symfony\Component\Finder\Finder::create()
+			->files()
+			->in( $config['paths']['plugin_dir'] )
+			->ignoreVCS( true )
+			->exclude( self::getExcludeFolders() ),
+		);
+	}
+
+	/**
+	 * Get list of finders for PHP-Scoper Stage 2
+	 *
+	 * Defines a list of Symfony Finder instances that specify which files should be processed by PHP-Scoper.
+	 * This allows for precise control over which files are included in the scoping process, such as only processing PHP files in the vendor directory.
+	 *
+	 * @return array List of Symfony Finder instances.
+	 */
+	public static function getFindersStage2() {
+
+		$config = Helper::getConfig();
+
+		return array(
+			\Isolated\Symfony\Component\Finder\Finder::create()
+			->files()
+			->in( $config['paths']['plugin_scoper_build_dir'] . 'vendor' )
+			->name( '*.php' ),
+		);
 	}
 }

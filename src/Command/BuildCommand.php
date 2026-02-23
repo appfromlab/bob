@@ -54,7 +54,11 @@ class BuildCommand extends BaseCommand {
 		$config = Helper::getConfig();
 
 		$commands = array(
+			new ArrayInput( array( 'command' => 'afl:bob:delete-scoper-build' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:delete-vendor-prefixed' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:scope', '--config' => $config['paths']['plugin_dir'] . '.scoper.1.php' ) ),
 			new Process(
+				// go into .afl-scoper-build dir and dump autoload there to generate optimized autoload files for the prefixed vendor.
 				array(
 					'composer',
 					'dump-autoload',
@@ -62,21 +66,21 @@ class BuildCommand extends BaseCommand {
 					'--no-scripts',
 				),
 				// set current working directory.
-				$config['paths']['plugin_dir']
+				$config['paths']['plugin_scoper_build_dir']
 			),
-			new ArrayInput( array( 'command' => 'afl:bob:delete-vendor-prefixed' ) ),
-			new ArrayInput( array( 'command' => 'afl:bob:scope' ) ),
-			new ArrayInput( array( 'command' => 'afl:bob:phpcbf-vendor-prefixed' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:scope', '--config' => $config['paths']['plugin_dir'] . '.scoper.2.php' ) ),
 			new Process(
+				// copy the prefixed plugin code from .afl-scoper-build/vendor-prefixed to plugin dir, overwriting existing files.
 				array(
-					'composer',
-					'dump-autoload',
-					'-d',
-					$config['paths']['plugin_dir'],
+					'rsync',
+					'-a',
+					$config['paths']['plugin_scoper_build_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
+					$config['paths']['plugin_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
 				),
-				// set current working directory.
+				// change current working directory to plugin dir.
 				$config['paths']['plugin_dir']
 			),
+			new ArrayInput( array( 'command' => 'afl:bob:phpcbf-vendor-prefixed' ) ),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );

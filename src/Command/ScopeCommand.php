@@ -13,6 +13,7 @@ namespace Appfromlab\Bob\Command;
 use Appfromlab\Bob\Helper;
 use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
@@ -31,7 +32,13 @@ class ScopeCommand extends BaseCommand {
 	 */
 	protected function configure(): void {
 		$this->setName( 'afl:bob:scope' )
-			->setDescription( 'Perform php-scoper on vendor folder.' );
+			->setDescription( 'Perform php-scoper on vendor folder.' )
+			->addOption(
+				'config',
+				null,
+				InputOption::VALUE_REQUIRED,
+				'Path to php-scoper config file. Defaults to <plugin_dir>/.scoper.inc.php.'
+			);
 	}
 
 	/**
@@ -52,13 +59,19 @@ class ScopeCommand extends BaseCommand {
 		// Get configuration.
 		$config = Helper::getConfig();
 
+		$scoper_config = $input->getOption( 'config' );
+
+		if ( empty( $scoper_config ) ) {
+			$scoper_config = $config['paths']['plugin_dir'] . '.scoper.inc.php';
+		}
+
 		$commands = array(
 			new Process(
 				array(
 					'php',
 					$config['paths']['plugin_vendor_dir'] . 'bin/php-scoper',
 					'add-prefix',
-					'--config=' . $config['paths']['plugin_dir'] . '.scoper.inc.php',
+					'--config=' . $scoper_config,
 				),
 				// set current working directory.
 				$config['paths']['plugin_dir']
