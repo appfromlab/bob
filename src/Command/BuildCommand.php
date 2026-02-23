@@ -81,6 +81,7 @@ class BuildCommand extends BaseCommand {
 				$config['paths']['plugin_dir']
 			),
 			new ArrayInput( array( 'command' => 'afl:bob:phpcbf-vendor-prefixed' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:delete-scoper-build' ) ),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
