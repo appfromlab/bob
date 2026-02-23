@@ -35,9 +35,9 @@ class ScopeCommand extends BaseCommand {
 			->setDescription( 'Perform php-scoper on vendor folder.' )
 			->addOption(
 				'config',
-				'c',
+				null,
 				InputOption::VALUE_REQUIRED,
-				'Path to php-scoper config file. Defaults to plugin .scoper.inc.php.'
+				'Path to php-scoper config file. Defaults to <plugin_dir>/.scoper.inc.php.'
 			);
 	}
 
