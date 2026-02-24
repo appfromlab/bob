@@ -1,8 +1,8 @@
 <?php
 /**
- * Configuration for PHP-Scoper.
+ * Configuration for PHP-Scoper Stage 2.
  *
- * @version 20260223000
+ * @version 20260225000
  */
 
 declare(strict_types=1);
@@ -15,7 +15,7 @@ if ( in_array( php_sapi_name(), array( 'cli', 'phpdbg' ), true ) === false ) {
 use Appfromlab\Bob\HelperScoper;
 
 /**
- * Get PHP-Scoper configuration using appfromlab/bob.
+ * Get PHP-Scoper configuration Stage 2 using appfromlab/bob.
  *
  * @return array
  */
