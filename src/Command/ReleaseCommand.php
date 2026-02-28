@@ -50,17 +50,14 @@ class ReleaseCommand extends BaseCommand {
 		$output->writeln( '<info>------ [START] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
-		$new_version = $input->getOption( 'version' );
-
-		$bump_version_input = array( 'command' => 'afl:bob:bump-version' );
-
-		if ( ! empty( $new_version ) ) {
-			$bump_version_input['--version'] = $new_version;
-		}
-
 		$commands = array(
 			new ArrayInput( array( 'command' => 'afl:bob:build' ) ),
-			new ArrayInput( $bump_version_input ),
+			new ArrayInput(
+				array(
+					'command'   => 'afl:bob:bump-version',
+					'--version' => $input->getOption( 'version' ),
+				)
+			),
 			new ArrayInput( array( 'command' => 'afl:bob:readme-generator' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:make-pot' ) ),
 		);
