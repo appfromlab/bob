@@ -27,8 +27,8 @@ Add a script to your plugin's `composer.json` file to run Bob commands easily.
 ```json
 "scripts": {
 	"bob": "@composer bin appfromlab-bob --ansi",
-	"afl:build": "composer bob afl:build",
-	"afl:release": "composer bob afl:release",
+	"build": "@bob afl:bob:build",
+	"release": "@bob afl:bob:release",
 }
 ```
 
@@ -46,7 +46,7 @@ composer bob <command>
 - **afl:bob:require-dev-global** - Add global composer packages for development.
 - **afl:bob:plugin-renamer-copy-config** - Copy plugin renamer file to your WordPress plugin folder.
 - **afl:bob:plugin-renamer** - Rename a plugin using the plugin renamer config file.
-- **afl:bob:build** - Perform build process.
+- **afl:bob:build** - Generate optimized composer autoloader files and run php-scoper on vendor folder.
 - **afl:bob:scope** - Perform php-scoper on vendor folder.
 - **afl:bob:phpcbf** - Beautify the plugin PHP files using PHPCBF.
 - **afl:bob:phpcbf-vendor-prefixed** - Beautify only the vendor-prefixed composer folder.
@@ -55,4 +55,5 @@ composer bob <command>
 - **afl:bob:bump-version** - Bump plugin version using value from plugin header.
 - **afl:bob:make-pot** - Generate the plugin language POT file.
 - **afl:bob:generate-readme** - Generate plugin readme.txt based from individual files from the .afl-extra/readme folder.
-- **afl:bob:release** - Perform the release process which builds the code, bump version, generate readme.txt and make-pot.
+- **afl:bob:release** - Run build, bump version, generate readme.txt and make-pot. (e.g afl:bob:release --version=X.Y.Z)
+- **afl:bob:lint** - Run PHPCBF and PHPCS on all PHP files before commit.

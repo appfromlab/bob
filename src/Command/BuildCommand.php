@@ -32,13 +32,14 @@ class BuildCommand extends BaseCommand {
 	 */
 	protected function configure(): void {
 		$this->setName( 'afl:bob:build' )
-			->setDescription( 'Perform build process.' );
+			->setDescription( 'Generate optimized composer autoloader files and perform PHP-Scoper on vendor folder.' );
 	}
 
 	/**
 	 * Execute the command
 	 *
-	 * Performs the complete plugin build process.
+	 * Performs the complete plugin build process including autoload dumping, vendor prefixing,
+	 * code beautification, and dependency resolution.
 	 *
 	 * @param InputInterface  $input  The input interface.
 	 * @param OutputInterface $output The output interface.

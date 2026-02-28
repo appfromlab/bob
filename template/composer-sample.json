@@ -18,14 +18,23 @@
         "post-update-cmd": [
             "@composer bin all update"
         ],
-        "afl:build": [
+        "lint": [
+            "@bob afl:bob:lint"
+        ],
+        "build": [
             "@bob afl:bob:build"
         ],
-        "afl:release": [
+        "release": [
             "@bob afl:bob:release"
         ],
         "bob": [
             "@composer bin appfromlab-bob --ansi"
         ]
+    },
+    "scripts-descriptions": {
+        "lint": "Run PHPCBF then PHPCS on PHP files before commit.",
+        "build": "Generate the optimized composer autoloader files and run PHP-Scoper on the vendor folder.",
+        "release": "Run the build command, bump version, generate readme.txt and make-pot.",
+        "bob": "Run appfromlab/bob commands. Usage: composer bob <command> [options]"
     }
 }
