@@ -11,7 +11,6 @@
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Composer\BatchCommands;
-use Appfromlab\Bob\Helper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -53,63 +52,15 @@ class ReleaseCommand extends BaseCommand {
 
 		$new_version = $input->getOption( 'version' );
 
+		$bump_version_input = array( 'command' => 'afl:bob:bump-version' );
+
 		if ( ! empty( $new_version ) ) {
-
-			// Validate format: must be a semantic version string.
-			if ( ! preg_match( '/^\d+\.\d+\.\d+$/', $new_version ) ) {
-				$output->writeln( '<error>ERROR: Invalid version format. Expected X.Y.Z (e.g. 1.2.3).</error>' );
-				return 1;
-			}
-
-			$config         = Helper::getConfig();
-			$plugin_headers = Helper::getPluginHeaders( $config['paths']['plugin_file'] );
-			$current_version = $plugin_headers['Version'];
-
-			// Ensure current version could be read.
-			if ( empty( $current_version ) ) {
-				$output->writeln( '<error>ERROR: Could not determine current plugin version from plugin header.</error>' );
-				return 1;
-			}
-
-			// Ensure new version is strictly greater than current version.
-			if ( version_compare( $new_version, $current_version, '<=' ) ) {
-				$output->writeln( "<error>ERROR: Version {$new_version} is not higher than the current plugin version {$current_version}.</error>" );
-				return 1;
-			}
-
-			// Replace the Version header in the plugin file.
-			$plugin_file      = $config['paths']['plugin_file'];
-			$existing_content = file_get_contents( $plugin_file );
-
-			if ( false === $existing_content ) {
-				$output->writeln( "<error>ERROR: Could not read plugin file: {$plugin_file}</error>" );
-				return 1;
-			}
-
-			$updated_content  = preg_replace(
-				'/^([ \t\/*#@]*Version:[ \t]*)[\d.]+/mi',
-				'${1}' . $new_version,
-				$existing_content,
-				-1,
-				$count
-			);
-
-			if ( 0 === $count ) {
-				$output->writeln( "<error>ERROR: Could not find Version header in plugin file: {$plugin_file}</error>" );
-				return 1;
-			}
-
-			if ( false === file_put_contents( $plugin_file, $updated_content ) ) {
-				$output->writeln( "<error>ERROR: Failed to write updated version to plugin file: {$plugin_file}</error>" );
-				return 1;
-			}
-
-			$output->writeln( "Plugin version updated to: {$new_version}" );
+			$bump_version_input['--version'] = $new_version;
 		}
 
 		$commands = array(
 			new ArrayInput( array( 'command' => 'afl:bob:build' ) ),
-			new ArrayInput( array( 'command' => 'afl:bob:bump-version' ) ),
+			new ArrayInput( $bump_version_input ),
 			new ArrayInput( array( 'command' => 'afl:bob:readme-generator' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:make-pot' ) ),
 		);
