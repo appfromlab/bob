@@ -31,7 +31,7 @@ class ReleaseCommand extends BaseCommand {
 	 */
 	protected function configure(): void {
 		$this->setName( 'afl:bob:release' )
-			->setDescription( 'Perform the release process which builds the code, bump version, generate readme.txt and make-pot.' )
+			->setDescription( 'Run build, bump version, generate readme.txt and make-pot.' )
 			->addOption( 'version', null, InputOption::VALUE_REQUIRED, 'The new version number (e.g. 1.2.3). Must be higher than the current plugin version.' );
 	}
 
