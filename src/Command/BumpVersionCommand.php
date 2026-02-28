@@ -3,6 +3,7 @@ namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
@@ -23,7 +24,8 @@ class BumpVersionCommand extends BaseCommand {
 	 */
 	protected function configure(): void {
 		$this->setName( 'afl:bob:bump-version' )
-			->setDescription( 'Bump plugin version using value from plugin header.' );
+			->setDescription( 'Bump plugin version using value from plugin header.' )
+			->addOption( 'version', null, InputOption::VALUE_REQUIRED, 'The new version number (e.g. 1.2.3). Must be higher than the current plugin version.' );
 	}
 
 	/**
@@ -41,6 +43,62 @@ class BumpVersionCommand extends BaseCommand {
 		$config = Helper::getConfig();
 
 		$plugin_headers = Helper::getPluginHeaders( $config['paths']['plugin_file'] );
+		$new_version    = $input->getOption( 'version' );
+
+		if ( ! empty( $new_version ) ) {
+
+			// Validate format: must be a semantic version string.
+			if ( ! preg_match( '/^\d+\.\d+\.\d+$/', $new_version ) ) {
+				$output->writeln( '<error>ERROR: Invalid version format. Expected X.Y.Z (e.g. 1.2.3).</error>' );
+				return 1;
+			}
+
+			$current_version = $plugin_headers['Version'];
+
+			// Ensure current version could be read.
+			if ( empty( $current_version ) ) {
+				$output->writeln( '<error>ERROR: Could not determine current plugin version from plugin header.</error>' );
+				return 1;
+			}
+
+			// Ensure new version is strictly greater than current version.
+			if ( version_compare( $new_version, $current_version, '<=' ) ) {
+				$output->writeln( "<error>ERROR: Version {$new_version} is not higher than the current plugin version {$current_version}.</error>" );
+				return 1;
+			}
+
+			// Replace the Version header in the plugin file.
+			$plugin_file      = $config['paths']['plugin_file'];
+			$existing_content = file_get_contents( $plugin_file );
+
+			if ( false === $existing_content ) {
+				$output->writeln( "<error>ERROR: Could not read plugin file: {$plugin_file}</error>" );
+				return 1;
+			}
+
+			$updated_content = preg_replace(
+				'/^([ \t\/*#@]*Version:[ \t]*)[\d.]+/mi',
+				'${1}' . $new_version,
+				$existing_content,
+				-1,
+				$count
+			);
+
+			if ( 0 === $count ) {
+				$output->writeln( "<error>ERROR: Could not find Version header in plugin file: {$plugin_file}</error>" );
+				return 1;
+			}
+
+			if ( false === file_put_contents( $plugin_file, $updated_content ) ) {
+				$output->writeln( "<error>ERROR: Failed to write updated version to plugin file: {$plugin_file}</error>" );
+				return 1;
+			}
+
+			$output->writeln( "Plugin version updated to: {$new_version}" );
+
+			// Update in-memory headers so the rest of the command uses the new version.
+			$plugin_headers['Version'] = $new_version;
+		}
 
 		$output->writeln( "Bump Plugin Version to: {$plugin_headers['Version']}" );
 		$output->writeln( "Plugin File: {$config['paths']['plugin_file']}" );
