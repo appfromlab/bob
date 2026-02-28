@@ -2,7 +2,8 @@
 /**
  * Lint Command
  *
- * Formats staged PHP files with PHPCBF then checks them with PHPCS.
+ * Formats PHP files with PHPCBF then checks them with PHPCS before commit.
+ * Only processes changed PHP files to optimize performance.
  *
  * @package Appfromlab\Bob\Command
  */
@@ -17,9 +18,9 @@ use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
 
 /**
- * Format and lint staged PHP files
+ * Format and lint PHP files
  *
- * First formats staged PHP files with PHPCBF, then checks them with PHPCS.
+ * First formats PHP files with PHPCBF, then checks them with PHPCS.
  */
 class LintCommand extends BaseCommand {
 
@@ -32,13 +33,13 @@ class LintCommand extends BaseCommand {
 	 */
 	protected function configure(): void {
 		$this->setName( 'afl:bob:lint' )
-			->setDescription( 'Format and check staged PHP files with PHPCBF and PHPCS.' );
+			->setDescription( 'Format and check PHP files with PHPCBF and PHPCS before commit. Only processes changed PHP files to optimize performance.' );
 	}
 
 	/**
 	 * Execute the command
 	 *
-	 * Retrieves staged PHP files, formats them with PHPCBF, then checks them with PHPCS.
+	 * Retrieves PHP files, formats them with PHPCBF, then checks them with PHPCS.
 	 *
 	 * @param InputInterface  $input  The input interface.
 	 * @param OutputInterface $output The output interface.
@@ -53,19 +54,20 @@ class LintCommand extends BaseCommand {
 		// Get configuration.
 		$config = Helper::getConfig();
 
-		// Get staged PHP files.
-		$staged_files = $this->getStagedPhpFiles( $config['paths']['plugin_dir'], $output );
+		// Get PHP files.
+		$files = $this->getPhpFiles( $config['paths']['plugin_dir'], $input, $output );
 
-		if ( empty( $staged_files ) ) {
-			$output->writeln( '<info>No staged PHP files found.</info>' );
+		if ( empty( $files ) ) {
+			$output->writeln( '<info>No PHP files found.</info>' );
 			$output->writeln( '' );
 			$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 			$output->writeln( '' );
 			return 0;
 		}
 
-		$output->writeln( '<info>Staged PHP files:</info>' );
-		foreach ( $staged_files as $file ) {
+		$output->writeln( '<info>PHP files:</info>' );
+
+		foreach ( $files as $file ) {
 			$output->writeln( '  ' . $file );
 		}
 		$output->writeln( '' );
@@ -75,16 +77,16 @@ class LintCommand extends BaseCommand {
 		$phpcs_binary   = $config['paths']['plugin_vendor_dir'] . 'bin' . DIRECTORY_SEPARATOR . 'phpcs';
 		$phpcs_standard = '--standard=' . $config['paths']['plugin_dir'] . '.phpcs.xml';
 
-		// Step 1: Format staged PHP files with PHPCBF.
+		// Step 1: Format PHP files with PHPCBF.
 		$phpcbf_args = array_merge(
 			array( 'php', $phpcbf_binary, $phpcs_standard ),
-			$staged_files
+			$files
 		);
 
-		// Step 2: Check staged PHP files with PHPCS.
+		// Step 2: Check PHP files with PHPCS.
 		$phpcs_args = array_merge(
 			array( 'php', $phpcs_binary, $phpcs_standard ),
-			$staged_files
+			$files
 		);
 
 		$commands = array(
@@ -112,26 +114,27 @@ class LintCommand extends BaseCommand {
 	}
 
 	/**
-	 * Get list of staged PHP files
+	 * Get list of PHP files
 	 *
-	 * Retrieves all staged PHP files using git diff --cached, supporting
+	 * Retrieves all PHP files except deleted ones, supporting
 	 * Linux, macOS and Windows (PowerShell).
 	 *
 	 * @param string          $working_dir The working directory to run git from.
+	 * @param InputInterface  $input       The input interface.
 	 * @param OutputInterface $output      The output interface.
-	 * @return array Array of absolute file paths for staged PHP files.
+	 * @return array Array of absolute file paths for PHP files.
 	 */
-	private function getStagedPhpFiles( string $working_dir, OutputInterface $output ): array {
+	private function getPhpFiles( string $working_dir, InputInterface $input, OutputInterface $output ): array {
 
 		$process = new Process(
-			array( 'git', 'diff', '--cached', '--name-only', '--diff-filter=ACM' ),
+			array( 'git', 'diff', '--name-only', '--diff-filter=d' ),
 			$working_dir
 		);
 
 		$process->run();
 
 		if ( ! $process->isSuccessful() ) {
-			$output->writeln( '<error>Failed to get staged files: ' . $process->getErrorOutput() . '</error>' );
+			$output->writeln( '<error>Failed to get files: ' . $process->getErrorOutput() . '</error>' );
 			return array();
 		}
 
