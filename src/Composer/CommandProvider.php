@@ -18,6 +18,7 @@ use Appfromlab\Bob\Command\DeleteVendorPrefixedCommand;
 use Appfromlab\Bob\Command\GenerateReadmeCommand;
 use Appfromlab\Bob\Command\HelloCommand;
 use Appfromlab\Bob\Command\InstallWpcliCommand;
+use Appfromlab\Bob\Command\LintCommand;
 use Appfromlab\Bob\Command\MakePotCommand;
 use Appfromlab\Bob\Command\NewPluginCommand;
 use Appfromlab\Bob\Command\PhpcbfCommand;
@@ -52,6 +53,7 @@ class CommandProvider implements CommandProviderCapability {
 			new GenerateReadmeCommand(),
 			new HelloCommand(),
 			new InstallWpcliCommand(),
+			new LintCommand(),
 			new MakePotCommand(),
 			new NewPluginCommand(),
 			new PhpcbfCommand(),
