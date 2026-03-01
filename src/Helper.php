@@ -270,6 +270,49 @@ class Helper {
 	}
 
 	/**
+	 * Recursively copy a directory and its contents
+	 *
+	 * Uses OS-native tools for cross-platform support:
+	 * - rsync on Linux/macOS
+	 * - robocopy on Windows
+	 *
+	 * @param string $src  Source directory path.
+	 * @param string $dest Destination directory path.
+	 * @return bool True on success, false on failure.
+	 */
+	public static function copyDirectory( $src, $dest ) {
+
+		if ( ! is_dir( $src ) ) {
+			return false;
+		}
+
+		if ( 'Windows' === PHP_OS_FAMILY ) {
+
+			// robocopy exit codes 0-7 indicate success (bit flags for various copy statuses).
+			$exit_code = 0;
+			passthru(
+				escapeshellcmd( 'robocopy ' . escapeshellarg( $src ) . ' ' . escapeshellarg( $dest ) . ' /E' ),
+				$exit_code
+			);
+
+			return $exit_code < 8;
+
+		} elseif ( 'Darwin' === PHP_OS_FAMILY || 'Linux' === PHP_OS_FAMILY ) {
+
+			// Trailing slash on $src copies contents into $dest (mirrors original rsync -a behaviour).
+			$exit_code = 0;
+			passthru(
+				escapeshellcmd( 'rsync -a ' . escapeshellarg( rtrim( $src, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR ) . ' ' . escapeshellarg( $dest ) ),
+				$exit_code
+			);
+
+			return 0 === $exit_code;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Safe file deletion check with security validation
 	 *
 	 * @param string $file_path Full file path to check.

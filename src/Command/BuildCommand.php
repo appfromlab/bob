@@ -70,17 +70,7 @@ class BuildCommand extends BaseCommand {
 				$config['paths']['plugin_scoper_build_dir']
 			),
 			new ArrayInput( array( 'command' => 'afl:bob:scope', '--config' => $config['paths']['plugin_dir'] . '.scoper.2.php' ) ),
-			new Process(
-				// copy the prefixed plugin code from .afl-scoper-build/vendor-prefixed to plugin dir, overwriting existing files.
-				array(
-					'rsync',
-					'-a',
-					$config['paths']['plugin_scoper_build_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
-					$config['paths']['plugin_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
-				),
-				// change current working directory to plugin dir.
-				$config['paths']['plugin_dir']
-			),
+			new ArrayInput( array( 'command' => 'afl:bob:copy-vendor-prefixed' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:phpcbf-vendor-prefixed' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:delete-scoper-build' ) ),
 		);
