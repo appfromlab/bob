@@ -1,0 +1,12 @@
+.*
+*.md
+*.zip
+/*.xml
+/doc/
+/docs/
+/test/
+/tests/
+/vendor/
+/vendor-bin/
+/vendor-prefixed/
+/node_modules/

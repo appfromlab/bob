@@ -70,10 +70,6 @@ class ScopeCommand extends BaseCommand {
 		$destination_path       = $config['paths']['plugin_scoper_build_dir'];
 		$exclude_from_file_path = $config['paths']['plugin_scoper_ignore_file'];
 
-		if ( ! is_dir( $config['paths']['plugin_scoper_build_dir'] ) ) {
-			mkdir( $config['paths']['plugin_scoper_build_dir'], 0774, true );
-		}
-
 		if ( ! file_exists( $scoper_bin_path ) ) {
 			$output->writeln( '<error>PHP-Scoper binary not found at ' . $scoper_bin_path . '</error>' );
 			return 1;
@@ -152,8 +148,8 @@ class ScopeCommand extends BaseCommand {
 		}
 
 		// Copy the scoped vendor files from .afl-scoper-build/<plugin_name>/vendor-prefixed/ to the plugin directory.
-		$source_vendor_prefixed_path      = $config['paths']['plugin_scoper_build_dir'] . 'vendor-prefixed';
-		$destination_vendor_prefixed_path = $config['paths']['plugin_dir'] . 'vendor-prefixed';
+		$source_vendor_prefixed_path      = $config['paths']['plugin_scoper_build_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR;
+		$destination_vendor_prefixed_path = $config['paths']['plugin_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR;
 
 		if ( Helper::copyDirectory(
 			$source_vendor_prefixed_path,
