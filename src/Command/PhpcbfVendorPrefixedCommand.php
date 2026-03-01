@@ -58,7 +58,7 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 				),
 				$config['paths']['plugin_dir'],
 				array(
-					'AFL_BOB_EXIT_0' => true,
+					'AFL_BOB_FORCE_EXIT_0' => true,
 				),
 			),
 		);

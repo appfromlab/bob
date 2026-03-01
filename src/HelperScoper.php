@@ -29,7 +29,7 @@ class HelperScoper {
 
 		$php_scoper_config = array(
 			'prefix'             => self::getNamespacePrefix(),
-			'output-dir'         => $config['paths']['plugin_scoper_build_dir'],
+			'output-dir'         => $config['paths']['plugin_scoper_build_dir'] . 'vendor' . DIRECTORY_SEPARATOR,
 			'exclude-namespaces' => self::getExcludeNamespaces(),
 			'exclude-classes'    => self::getExcludeClasses(),
 			'patchers'           => self::getPatchersStage1(),
@@ -88,11 +88,11 @@ class HelperScoper {
 
 		$exclude_folders = array(
 			'bin',
-			'vendor-bin',
 			'test',
 			'tests',
 			'docs',
 			'docs',
+			'vendor-bin',
 		);
 
 		$config = Helper::getConfig();
@@ -157,12 +157,12 @@ class HelperScoper {
 	 *
 	 * @return array List of patcher callback functions.
 	 */
-	public static function getPatchersStage1(){
+	public static function getPatchersStage1() {
 
 		$config = Helper::getConfig();
 
 		return array(
-			function (string $filePath, string $prefix, string $content) use ( $config ): string {
+			function ( string $filePath, string $prefix, string $content ) use ( $config ): string {
 				return $content;
 			},
 		);
@@ -176,12 +176,12 @@ class HelperScoper {
 	 *
 	 * @return array List of patcher callback functions.
 	 */
-	public static function getPatchersStage2(){
+	public static function getPatchersStage2() {
 
 		$config = Helper::getConfig();
 
 		return array(
-			function (string $filePath, string $prefix, string $content) use ( $config ): string {
+			function ( string $filePath, string $prefix, string $content ) use ( $config ): string {
 				if ( $config['paths']['plugin_scoper_build_dir'] . 'vendor/composer/autoload_real.php' === $filePath ) {
 					$content = str_replace(
 						"'Composer\\Autoload\\ClassLoader'",
@@ -204,8 +204,8 @@ class HelperScoper {
 	 * @return array List of classes to exclude from scoping.
 	 */
 	public static function getExcludeClasses() {
-		$exclude_classes =  array(
-			'Composer\Semver\VersionParser'
+		$exclude_classes = array(
+			'Composer\Semver\VersionParser',
 		);
 
 		$config = Helper::getConfig();
@@ -232,7 +232,7 @@ class HelperScoper {
 		return array(
 			\Isolated\Symfony\Component\Finder\Finder::create()
 			->files()
-			->in( $config['paths']['plugin_dir'] )
+			->in( $config['paths']['plugin_vendor_dir'] )
 			->ignoreVCS( true )
 			->exclude( self::getExcludeFolders() ),
 		);
@@ -253,7 +253,8 @@ class HelperScoper {
 		return array(
 			\Isolated\Symfony\Component\Finder\Finder::create()
 			->files()
-			->in( $config['paths']['plugin_scoper_build_dir'] . 'vendor' )
+			->in( $config['paths']['plugin_scoper_build_dir'] . 'vendor' . DIRECTORY_SEPARATOR )
+			->ignoreVCS( true )
 			->name( '*.php' ),
 		);
 	}

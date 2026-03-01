@@ -12,7 +12,6 @@ namespace Appfromlab\Bob\Composer;
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 use Appfromlab\Bob\Command\BuildCommand;
 use Appfromlab\Bob\Command\BumpVersionCommand;
-use Appfromlab\Bob\Command\CopyVendorPrefixedCommand;
 use Appfromlab\Bob\Command\DeleteComposerLockCommand;
 use Appfromlab\Bob\Command\DeleteScoperBuildCommand;
 use Appfromlab\Bob\Command\DeleteVendorPrefixedCommand;
@@ -48,7 +47,6 @@ class CommandProvider implements CommandProviderCapability {
 		return array(
 			new BuildCommand(),
 			new BumpVersionCommand(),
-			new CopyVendorPrefixedCommand(),
 			new DeleteComposerLockCommand(),
 			new DeleteScoperBuildCommand(),
 			new DeleteVendorPrefixedCommand(),

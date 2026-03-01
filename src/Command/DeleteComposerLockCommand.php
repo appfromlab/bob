@@ -48,7 +48,9 @@ class DeleteComposerLockCommand extends BaseCommand {
 
 		$config = Helper::getConfig();
 
-		if ( ! Helper::safeToDelete( $config['paths']['plugin_composer_lock_file'], 'composer.lock', $config['paths']['plugin_dir'] ) ) {
+		if ( Helper::safeToDelete( $config['paths']['plugin_composer_lock_file'], 'composer.lock', $config['paths']['plugin_dir'] ) ) {
+			$output->writeln( 'Deleted composer.lock file...' );
+		} else {
 			$output->writeln( '<warning>WARNING: Failed to delete composer.lock</warning>' );
 		}
 
