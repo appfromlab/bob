@@ -52,8 +52,8 @@ composer bob <command>
 - **afl:bob:phpcbf-vendor-prefixed** - Beautify only the vendor-prefixed composer folder.
 - **afl:bob:delete-composer-lock** - Delete composer.lock file in the WordPress plugin folder.
 - **afl:bob:delete-vendor-prefixed** - Delete vendor-prefixed folder in the WordPress plugin folder.
-- **afl:bob:bump-version** - Bump plugin version using value from plugin header.
+- **afl:bob:bump-version** - Bump plugin version (use the input --version=X.Y.Z).
 - **afl:bob:make-pot** - Generate the plugin language POT file.
 - **afl:bob:generate-readme** - Generate plugin readme.txt based from individual files from the .afl-extra/readme folder.
-- **afl:bob:release** - Run build, bump version, generate readme.txt and make-pot. (e.g afl:bob:release --version=X.Y.Z)
+- **afl:bob:release** - Bump version, run the build process, generate readme.txt and make-pot (e.g afl:bob:release --version=X.Y.Z).
 - **afl:bob:lint** - Run PHPCBF and PHPCS on all PHP files before commit.

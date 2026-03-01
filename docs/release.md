@@ -38,7 +38,7 @@ Running the composer command below will build neccessary files, automatically up
 - /language/afl-plugin-boilerplate.pot
 
 ```bash
-composer afl:release
+composer release -- --version=X.Y.Z
 ```
 
 ## Commit, Push, Merge

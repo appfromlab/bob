@@ -15,5 +15,5 @@ composer bob afl:bob:require-dev-global
 Run the build command for the first time and each time you add or remove files in the `src` folder.
 
 ```bash
-composer afl:build
+composer build
 ```

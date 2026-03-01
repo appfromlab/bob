@@ -37,7 +37,7 @@ composer update
 Run the build command for the first time and each time you add or remove files in the `src` folder.
 
 ```bash
-composer afl:build
+composer build
 ```
 
 If you had add / remove a new composer dependency package, run the command:
@@ -54,7 +54,7 @@ composer update
 Run this command each time you add or remove files in the `src` folder.
 
 ```bash
-composer afl:build
+composer build
 ```
 
 ## Step 6: Preparing a new Plugin Release Version
