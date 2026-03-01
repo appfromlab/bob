@@ -13,7 +13,7 @@ namespace Appfromlab\Bob\Command;
 use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
@@ -32,7 +32,7 @@ class ReleaseCommand extends BaseCommand {
 	protected function configure(): void {
 		$this->setName( 'afl:bob:release' )
 			->setDescription( 'Run build, bump version, generate readme.txt and make-pot.' )
-			->addOption( 'version', null, InputOption::VALUE_REQUIRED, 'The new version number (e.g. 1.2.3). Must be higher than the current plugin version.' );
+			->addArgument( 'version', null, InputArgument::REQUIRED, 'The new version number (e.g. 1.2.3). Must be higher than the current plugin version.' );
 	}
 
 	/**
@@ -54,7 +54,7 @@ class ReleaseCommand extends BaseCommand {
 			new ArrayInput(
 				array(
 					'command'   => 'afl:bob:bump-version',
-					'--version' => $input->getOption( 'version' ),
+					'version' => $input->getArgument( 'version' ),
 				)
 			),
 			new ArrayInput( array( 'command' => 'afl:bob:build' ) ),
