@@ -67,7 +67,7 @@ class BuildCommand extends BaseCommand {
 		if ( $input->getOption( 'zip' ) ) {
 			$commands[] = new ArrayInput( array( 'command' => 'afl:bob:zip-plugin' ) );
 		}
-		return 1;
+
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 
 		$output->writeln( '' );
