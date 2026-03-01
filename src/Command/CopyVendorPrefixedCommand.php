@@ -3,7 +3,7 @@
  * Copy Vendor Prefixed Directory Command
  *
  * Copies the vendor-prefixed directory from the scoper build folder to the plugin directory.
- * Uses PHP built-in functions for cross-platform support (Windows, macOS, Linux).
+ * Uses rsync on Linux/macOS and robocopy on Windows for cross-platform support.
  *
  * @package Appfromlab\Bob\Command
  */
@@ -36,7 +36,7 @@ class CopyVendorPrefixedCommand extends BaseCommand {
 	 * Execute the command
 	 *
 	 * Copies the vendor-prefixed directory from the scoper build folder to the plugin directory
-	 * using PHP built-in functions to ensure cross-platform compatibility.
+	 * using rsync on Linux/macOS and robocopy on Windows for cross-platform compatibility.
 	 *
 	 * @param InputInterface  $input  The input interface.
 	 * @param OutputInterface $output The output interface.

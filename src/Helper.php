@@ -272,8 +272,9 @@ class Helper {
 	/**
 	 * Recursively copy a directory and its contents
 	 *
-	 * Uses PHP built-in functions to copy a directory recursively,
-	 * providing cross-platform support (Windows, macOS, Linux).
+	 * Uses OS-native tools for cross-platform support:
+	 * - rsync on Linux/macOS
+	 * - robocopy on Windows
 	 *
 	 * @param string $src  Source directory path.
 	 * @param string $dest Destination directory path.
@@ -285,28 +286,30 @@ class Helper {
 			return false;
 		}
 
-		if ( ! is_dir( $dest ) && ! mkdir( $dest, 0755, true ) ) {
-			return false;
+		if ( 'Windows' === PHP_OS_FAMILY ) {
+
+			// robocopy exit codes 0-7 indicate success (bit flags for various copy statuses).
+			$exit_code = 0;
+			passthru(
+				escapeshellcmd( 'robocopy ' . escapeshellarg( $src ) . ' ' . escapeshellarg( $dest ) . ' /E' ),
+				$exit_code
+			);
+
+			return $exit_code < 8;
+
+		} elseif ( 'Darwin' === PHP_OS_FAMILY || 'Linux' === PHP_OS_FAMILY ) {
+
+			// Trailing slash on $src copies contents into $dest (mirrors original rsync -a behaviour).
+			$exit_code = 0;
+			passthru(
+				escapeshellcmd( 'rsync -a ' . escapeshellarg( rtrim( $src, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR ) . ' ' . escapeshellarg( $dest ) ),
+				$exit_code
+			);
+
+			return 0 === $exit_code;
 		}
 
-		$iterator = new \RecursiveIteratorIterator(
-			new \RecursiveDirectoryIterator( $src, \RecursiveDirectoryIterator::SKIP_DOTS ),
-			\RecursiveIteratorIterator::SELF_FIRST
-		);
-
-		foreach ( $iterator as $item ) {
-			$dest_path = $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
-
-			if ( $item->isDir() ) {
-				if ( ! is_dir( $dest_path ) && ! mkdir( $dest_path, 0755, true ) ) {
-					return false;
-				}
-			} elseif ( ! copy( $item->getRealPath(), $dest_path ) ) {
-				return false;
-			}
-		}
-
-		return true;
+		return false;
 	}
 
 	/**
