@@ -78,24 +78,25 @@ class Helper {
 			$plugin_dir = dirname( $composer_json_file_path ) . DIRECTORY_SEPARATOR;
 
 			$output = array(
-				'root_dir'                   => $composer_plugin_dir,
-				'template_dir'               => $composer_plugin_dir . 'template' . DIRECTORY_SEPARATOR,
-				'plugin_composer_file'       => $plugin_dir . 'composer.json',
-				'plugin_composer_lock_file'  => $plugin_dir . 'composer.lock',
-				'plugin_dir'                 => $plugin_dir,
-				'plugin_file'                => '',
-				'plugin_bin_dir'             => $plugin_dir . '.bin' . DIRECTORY_SEPARATOR,
-				'plugin_extra_dir'           => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR,
-				'plugin_extra_config_dir'    => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR,
-				'plugin_extra_tools_dir'     => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR,
-				'plugin_extra_readme_dir'    => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'readme' . DIRECTORY_SEPARATOR,
-				'plugin_language_dir'        => $plugin_dir . 'languages' . DIRECTORY_SEPARATOR,
-				'plugin_readme_file'         => $plugin_dir . 'readme.txt',
-				'plugin_vendor_dir'          => $plugin_dir . 'vendor' . DIRECTORY_SEPARATOR,
-				'plugin_vendor_prefixed_dir' => $plugin_dir . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
-				'plugin_scoper_build_dir'    => $plugin_dir . '.afl-scoper-build' . DIRECTORY_SEPARATOR,
-				'plugin_scoper_stage_1_config_file'  => $plugin_dir . '.scoper.1.php',
-				'plugin_scoper_stage_2_config_file'  => $plugin_dir . '.scoper.2.php',
+				'root_dir'                          => $composer_plugin_dir,
+				'template_dir'                      => $composer_plugin_dir . 'template' . DIRECTORY_SEPARATOR,
+				'plugin_composer_file'              => $plugin_dir . 'composer.json',
+				'plugin_composer_lock_file'         => $plugin_dir . 'composer.lock',
+				'plugin_dir'                        => $plugin_dir,
+				'plugin_file'                       => '',
+				'plugin_bin_dir'                    => $plugin_dir . '.bin' . DIRECTORY_SEPARATOR,
+				'plugin_extra_dir'                  => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR,
+				'plugin_extra_config_dir'           => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR,
+				'plugin_extra_tools_dir'            => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR,
+				'plugin_extra_readme_dir'           => $plugin_dir . '.afl-extra' . DIRECTORY_SEPARATOR . 'readme' . DIRECTORY_SEPARATOR,
+				'plugin_language_dir'               => $plugin_dir . 'languages' . DIRECTORY_SEPARATOR,
+				'plugin_readme_file'                => $plugin_dir . 'readme.txt',
+				'plugin_vendor_dir'                 => $plugin_dir . 'vendor' . DIRECTORY_SEPARATOR,
+				'plugin_vendor_prefixed_dir'        => $plugin_dir . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
+				'plugin_scoper_build_dir'           => dirname( $plugin_dir ) . DIRECTORY_SEPARATOR . '.afl-scoper-build' . DIRECTORY_SEPARATOR . basename( $plugin_dir ) . DIRECTORY_SEPARATOR,
+				'plugin_scoper_ignore_file'         => $plugin_dir . '.scoperignore',
+				'plugin_scoper_stage_1_config_file' => $plugin_dir . '.scoper.1.php',
+				'plugin_scoper_stage_2_config_file' => $plugin_dir . '.scoper.2.php',
 			);
 		}
 
@@ -280,33 +281,60 @@ class Helper {
 	 * @param string $dest Destination directory path.
 	 * @return bool True on success, false on failure.
 	 */
-	public static function copyDirectory( $src, $dest ) {
+	public static function copyDirectory( $src, $dest, $options = array() ) {
+
+		$src  = rtrim( $src, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR;
+		$dest = rtrim( $dest, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR;
 
 		if ( ! is_dir( $src ) ) {
 			return false;
 		}
 
-		if ( 'Windows' === PHP_OS_FAMILY ) {
+		if ( $options['cwd'] ?? false ) {
+			$cwd = $options['cwd'];
+		} else {
+			$cwd = null;
+		}
 
-			// robocopy exit codes 0-7 indicate success (bit flags for various copy statuses).
-			$exit_code = 0;
-			passthru(
-				escapeshellcmd( 'robocopy ' . escapeshellarg( $src ) . ' ' . escapeshellarg( $dest ) . ' /E' ),
-				$exit_code
+		$exclude_from_file_path = '';
+
+		if ( $options['exclude_from'] ?? false ) {
+			$exclude_from_file_path = $options['exclude_from'];
+
+			if ( ! file_exists( $exclude_from_file_path ) ) {
+				return false;
+			}
+		}
+
+		if ( 'Darwin' === PHP_OS_FAMILY || 'Linux' === PHP_OS_FAMILY ) {
+
+			$copy_process_commands = array(
+				'rsync',
+				'-r', // recursive
+				// '--no-perms',
+				// '--no-times',
+				// '--omit-dir-times',
 			);
 
-			return $exit_code < 8;
+			if ( $exclude_from_file_path ?? false ) {
+				$copy_process_commands[] = '--exclude-from=' . $exclude_from_file_path;
+			}
 
-		} elseif ( 'Darwin' === PHP_OS_FAMILY || 'Linux' === PHP_OS_FAMILY ) {
+			$copy_process_commands[] = $src; // Trailing slash on source copies contents into destination (mirrors original rsync -a behaviour).
+			$copy_process_commands[] = $dest;
 
-			// Trailing slash on $src copies contents into $dest (mirrors original rsync -a behaviour).
-			$exit_code = 0;
-			passthru(
-				escapeshellcmd( 'rsync -a ' . escapeshellarg( rtrim( $src, DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR ) . ' ' . escapeshellarg( $dest ) ),
-				$exit_code
+			$copy_process = new \Symfony\Component\Process\Process(
+				$copy_process_commands,
+				$cwd // set current working directory.
 			);
+
+			$exit_code = $copy_process->run();
 
 			return 0 === $exit_code;
+		} else {
+			// Windows - fail
+			echo "\r\n" . '<error>Windows not supported. Install wsl and run commands there.</error>' . "\r\n";
+			return false;
 		}
 
 		return false;

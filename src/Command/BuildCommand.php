@@ -55,24 +55,7 @@ class BuildCommand extends BaseCommand {
 		$config = Helper::getConfig();
 
 		$commands = array(
-			new ArrayInput( array( 'command' => 'afl:bob:delete-scoper-build' ) ),
-			new ArrayInput( array( 'command' => 'afl:bob:delete-vendor-prefixed' ) ),
-			new ArrayInput( array( 'command' => 'afl:bob:scope', '--config' => $config['paths']['plugin_dir'] . '.scoper.1.php' ) ),
-			new Process(
-				// go into .afl-scoper-build dir and dump autoload there to generate optimized autoload files for the prefixed vendor.
-				array(
-					'composer',
-					'dump-autoload',
-					'--no-dev',
-					'--no-scripts',
-				),
-				// set current working directory.
-				$config['paths']['plugin_scoper_build_dir']
-			),
-			new ArrayInput( array( 'command' => 'afl:bob:scope', '--config' => $config['paths']['plugin_dir'] . '.scoper.2.php' ) ),
-			new ArrayInput( array( 'command' => 'afl:bob:copy-vendor-prefixed' ) ),
-			new ArrayInput( array( 'command' => 'afl:bob:phpcbf-vendor-prefixed' ) ),
-			new ArrayInput( array( 'command' => 'afl:bob:delete-scoper-build' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:scope' ) ),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );

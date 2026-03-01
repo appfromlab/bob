@@ -50,8 +50,10 @@ class DeleteScoperBuildCommand extends BaseCommand {
 
 		if ( file_exists( $config['paths']['plugin_scoper_build_dir'] ) ) {
 
-			if ( ! Helper::safeToDelete( $config['paths']['plugin_scoper_build_dir'], '.afl-scoper-build', $config['paths']['plugin_scoper_build_dir'] ) ) {
-				$output->writeln( '<warning>WARNING: .afl-scoper-build folder cannot be deleted.</warning>' );
+			if ( Helper::safeToDelete( $config['paths']['plugin_scoper_build_dir'], basename( $config['paths']['plugin_dir'] ), $config['paths']['plugin_scoper_build_dir'] ) ) {
+				$output->writeln( 'Deleted .afl-scoper-build folder...' );
+			} else {
+				$output->writeln( '<error>Failed to delete .afl-scoper-build folder.</error>' );
 			}
 		}
 
