@@ -65,6 +65,7 @@ auth.json
 !.scoper.inc.php
 !.scoper.1.php
 !.scoper.2.php
+!.scoperignore
 !composer.json
 !composer.lock
 !composer-sample.json

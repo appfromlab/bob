@@ -24,6 +24,9 @@
         "build": [
             "@bob afl:bob:build"
         ],
+        "build:zip": [
+            "@bob afl:bob:build --zip"
+        ],
         "release": [
             "@bob afl:bob:release"
         ],
@@ -34,6 +37,7 @@
     "scripts-descriptions": {
         "lint": "Run PHPCBF then PHPCS on PHP files before commit.",
         "build": "Generate the optimized composer autoloader files and run PHP-Scoper on the vendor folder.",
+        "build:zip": "Run the build command and then create a zip archive of the plugin for distribution.",
         "release": "Bump version, run build, generate readme.txt and make-pot. Usage: composer release <version>",
         "bob": "Run appfromlab/bob commands. Usage: composer bob <command> [options]"
     }

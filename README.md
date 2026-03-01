@@ -57,3 +57,4 @@ composer bob <command>
 - **afl:bob:generate-readme** - Generate plugin readme.txt based from individual files from the .afl-extra/readme folder.
 - **afl:bob:release** - Bump version, run the build process, generate readme.txt and make-pot (Usage: composer release <version>).
 - **afl:bob:lint** - Run PHPCBF and PHPCS on all PHP files before commit.
+- **afl:bob:zip-plugin** - Create a zip archive of the plugin for distribution.

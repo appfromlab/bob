@@ -93,10 +93,12 @@ class Helper {
 				'plugin_readme_file'                => $plugin_dir . 'readme.txt',
 				'plugin_vendor_dir'                 => $plugin_dir . 'vendor' . DIRECTORY_SEPARATOR,
 				'plugin_vendor_prefixed_dir'        => $plugin_dir . 'vendor-prefixed' . DIRECTORY_SEPARATOR,
-				'plugin_scoper_build_dir'           => dirname( $plugin_dir ) . DIRECTORY_SEPARATOR . '.afl-scoper-build' . DIRECTORY_SEPARATOR . basename( $plugin_dir ) . DIRECTORY_SEPARATOR,
+				'plugin_scoper_build_dir'           => dirname( $plugin_dir ) . DIRECTORY_SEPARATOR . '.afl-scoper-build' . DIRECTORY_SEPARATOR,
 				'plugin_scoper_ignore_file'         => $plugin_dir . '.scoperignore',
 				'plugin_scoper_stage_1_config_file' => $plugin_dir . '.scoper.1.php',
 				'plugin_scoper_stage_2_config_file' => $plugin_dir . '.scoper.2.php',
+				'plugin_distribution_dir'           => dirname( $plugin_dir ) . DIRECTORY_SEPARATOR . '.afl-dist' . DIRECTORY_SEPARATOR,
+				'plugin_distribution_ignore_file'   => $plugin_dir . '.distignore',
 			);
 		}
 
@@ -113,7 +115,7 @@ class Helper {
 	 */
 	public static function getConfig() {
 
-		// check composer.json exists.
+		// Check if composer.json exists.
 		$paths = self::getPaths();
 
 		if ( ! empty( $paths['plugin_composer_file'] ) && file_exists( $paths['plugin_composer_file'] ) ) {
@@ -138,14 +140,18 @@ class Helper {
 		$config          = $composer['extra']['appfromlab/bob'];
 		$config['paths'] = $paths;
 
-		// generate path to main plugin file.
+		// Generate path to main plugin file.
 		$config['paths']['plugin_file'] = $config['paths']['plugin_dir'] . $config['plugin_folder_name'] . '.php';
 
-		// check if main plugin file exists.
+		// Check if main plugin file exists.
 		if ( ! file_exists( $config['paths']['plugin_file'] ) ) {
 			echo "ERROR: Main plugin file not found: {$config['paths']['plugin_file']}\n";
 			exit( 1 );
 		}
+
+		// Setup additional paths that depend on plugin_folder_name.
+		$config['paths']['plugin_scoper_build_dir'] = $config['paths']['plugin_scoper_build_dir'] . $config['plugin_folder_name'] . DIRECTORY_SEPARATOR;
+		$config['paths']['plugin_distribution_dir'] = $config['paths']['plugin_distribution_dir'] . $config['plugin_folder_name'] . DIRECTORY_SEPARATOR;
 
 		return $config;
 	}
@@ -290,6 +296,10 @@ class Helper {
 			return false;
 		}
 
+		if ( ! is_dir( $dest ) ) {
+			mkdir( $dest, 0774, true );
+		}
+
 		if ( $options['cwd'] ?? false ) {
 			$cwd = $options['cwd'];
 		} else {
@@ -332,7 +342,7 @@ class Helper {
 
 			return 0 === $exit_code;
 		} else {
-			// Windows - fail
+			// Windows - fail.
 			echo "\r\n" . '<error>Windows not supported. Install wsl and run commands there.</error>' . "\r\n";
 			return false;
 		}
