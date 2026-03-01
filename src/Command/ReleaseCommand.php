@@ -2,8 +2,8 @@
 /**
  * Plugin Release Command
  *
- * Orchestrates the complete plugin release process including building,
- * bumping version, generating readme, and creating language files.
+ * Orchestrates the complete plugin release process including bumping version,
+ * running the build process, generating readme.txt, and creating language files.
  *
  * @package Appfromlab\Bob\Command
  */
@@ -51,13 +51,13 @@ class ReleaseCommand extends BaseCommand {
 		$output->writeln( '' );
 
 		$commands = array(
-			new ArrayInput( array( 'command' => 'afl:bob:build' ) ),
 			new ArrayInput(
 				array(
 					'command'   => 'afl:bob:bump-version',
 					'--version' => $input->getOption( 'version' ),
 				)
 			),
+			new ArrayInput( array( 'command' => 'afl:bob:build' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:readme-generator' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:make-pot' ) ),
 		);
