@@ -31,14 +31,16 @@ In the plugin header comment (afl-plugin-boilerplate.php), increase the followin
 
 ## Run composer command
 
-Running the composer command below will build neccessary files, automatically update the plugin version and generate the language pot file.
+Running the composer command below will update the plugin version, run build, generate readme.txt and language pot file.
 
-- afl-plugin-boilerplate.php (main plugin file)
-- readme.txt
-- /language/afl-plugin-boilerplate.pot
+- ./afl-plugin-boilerplate.php (main plugin file)
+- ./readme.txt
+- ./language/afl-plugin-boilerplate.pot
+
+Composer command:
 
 ```bash
-composer release -- --version=X.Y.Z
+composer release X.Y.Z
 ```
 
 ## Commit, Push, Merge

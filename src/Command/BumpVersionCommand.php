@@ -3,7 +3,7 @@ namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
@@ -25,7 +25,7 @@ class BumpVersionCommand extends BaseCommand {
 	protected function configure(): void {
 		$this->setName( 'afl:bob:bump-version' )
 			->setDescription( 'Bump plugin version using value from plugin header.' )
-			->addOption( 'version', null, InputOption::VALUE_REQUIRED, 'The new version number (e.g. 1.2.3). Must be higher than the current plugin version.' );
+			->addArgument( 'version', null, InputArgument::REQUIRED, 'The new version number (e.g. 1.2.3). Must be higher than the current plugin version.' );
 	}
 
 	/**
@@ -43,7 +43,7 @@ class BumpVersionCommand extends BaseCommand {
 		$config = Helper::getConfig();
 
 		$plugin_headers = Helper::getPluginHeaders( $config['paths']['plugin_file'] );
-		$new_version    = $input->getOption( 'version' );
+		$new_version    = $input->getArgument( 'version' );
 
 		if ( ! empty( $new_version ) ) {
 
