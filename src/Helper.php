@@ -270,6 +270,46 @@ class Helper {
 	}
 
 	/**
+	 * Recursively copy a directory and its contents
+	 *
+	 * Uses PHP built-in functions to copy a directory recursively,
+	 * providing cross-platform support (Windows, macOS, Linux).
+	 *
+	 * @param string $src  Source directory path.
+	 * @param string $dest Destination directory path.
+	 * @return bool True on success, false on failure.
+	 */
+	public static function copyDirectory( $src, $dest ) {
+
+		if ( ! is_dir( $src ) ) {
+			return false;
+		}
+
+		if ( ! is_dir( $dest ) && ! mkdir( $dest, 0755, true ) ) {
+			return false;
+		}
+
+		$iterator = new \RecursiveIteratorIterator(
+			new \RecursiveDirectoryIterator( $src, \RecursiveDirectoryIterator::SKIP_DOTS ),
+			\RecursiveIteratorIterator::SELF_FIRST
+		);
+
+		foreach ( $iterator as $item ) {
+			$dest_path = $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathname();
+
+			if ( $item->isDir() ) {
+				if ( ! is_dir( $dest_path ) && ! mkdir( $dest_path, 0755, true ) ) {
+					return false;
+				}
+			} elseif ( ! copy( $item->getRealPath(), $dest_path ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Safe file deletion check with security validation
 	 *
 	 * @param string $file_path Full file path to check.
