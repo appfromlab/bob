@@ -58,3 +58,5 @@ composer bob <command>
 - **afl:bob:release** - Bump version, run the build process, generate readme.txt and make-pot (Usage: composer release <version>).
 - **afl:bob:lint** - Run PHPCBF and PHPCS on all PHP files before commit.
 - **afl:bob:zip-plugin** - Create a zip archive of the plugin for distribution.
+- **afl:bob:dist-prepare** - Prepare the distribution folder by copying the built plugin files to the ../.afl-dist/<plugin_name>/ folder.
+- **afl:bob:dist-clean** - Clean the distribution folder by deleting the contents of the ../.afl-dist/<plugin_name>/ folder.

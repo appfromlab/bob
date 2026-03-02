@@ -15,6 +15,7 @@ use Appfromlab\Bob\Command\BumpVersionCommand;
 use Appfromlab\Bob\Command\DeleteComposerLockCommand;
 use Appfromlab\Bob\Command\DeleteScoperBuildCommand;
 use Appfromlab\Bob\Command\DeleteVendorPrefixedCommand;
+use Appfromlab\Bob\Command\DistCleanCommand;
 use Appfromlab\Bob\Command\DistPrepareCommand;
 use Appfromlab\Bob\Command\GenerateReadmeCommand;
 use Appfromlab\Bob\Command\HelloCommand;
@@ -53,6 +54,7 @@ class CommandProvider implements CommandProviderCapability {
 			new DeleteScoperBuildCommand(),
 			new DeleteVendorPrefixedCommand(),
 			new DistPrepareCommand(),
+			new DistCleanCommand(),
 			new GenerateReadmeCommand(),
 			new HelloCommand(),
 			new InstallWpcliCommand(),
