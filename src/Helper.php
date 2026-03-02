@@ -429,4 +429,42 @@ class Helper {
 
 		return $exit_code ? false : true;
 	}
+
+	/**
+	 * Verify plugin version format and match against current plugin version
+	 *
+	 * Validates that the provided version string follows semantic versioning format
+	 * and matches the current plugin version defined in the main plugin file.
+	 *
+	 * @param string $version Version string to verify.
+	 * @return bool True if version is valid and matches current plugin version, false otherwise.
+	 */
+	public static function verify_plugin_version( $version ) {
+
+		// Basic validation for semantic versioning format (e.g., 1.0.0, 2.1.3-beta, etc.).
+		if ( empty( $version ) || ! preg_match( '/^\d+\.\d+\.\d+(-[A-Za-z0-9]+)?$/', $version ) ) {
+			return false;
+		}
+
+		// Get configuration.
+		$config = self::getConfig();
+
+		// Check against the current plugin version to ensure it is equal.
+		return self::get_plugin_version() === $version;
+	}
+
+	/**
+	 * Get the current plugin version from the main plugin file
+	 *
+	 * Extracts the Version header from the main plugin file to determine the current plugin version.
+	 *
+	 * @return string|null The current plugin version, or null if not found.
+	 */
+	public static function get_plugin_version() {
+
+		// Get configuration.
+		$config = self::getConfig();
+
+		return self::getPluginHeaders( $config['paths']['plugin_file'] )['Version'] ?? null;
+	}
 }

@@ -44,6 +44,12 @@ class BuildCommand extends BaseCommand {
 				null,
 				InputOption::VALUE_NONE,
 				'Prepare the plugin folder for distribution by copying necessary files to a dist/ directory after building.'
+			)
+			->addOption(
+				'verify-version',
+				null,
+				InputOption::VALUE_OPTIONAL,
+				'Verify the plugin version before building.'
 			);
 	}
 
@@ -56,6 +62,7 @@ class BuildCommand extends BaseCommand {
 	 * @param InputInterface  $input  The input interface.
 	 * @param OutputInterface $output The output interface.
 	 * @return int Exit code (0 for success, non-zero for failure).
+	 * @throws \RuntimeException If a runtime exception occurs during the build process.
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ): int {
 
@@ -66,17 +73,31 @@ class BuildCommand extends BaseCommand {
 		// Get configuration.
 		$config = Helper::getConfig();
 
-		$commands = array(
-			new ArrayInput( array( 'command' => 'afl:bob:scope' ) ),
-		);
+		try {
+			if ( $input->getOption( 'verify-version' ) ) {
 
-		if ( $input->getOption( 'dist' ) ) {
-			$commands[] = new ArrayInput( array( 'command' => 'afl:bob:dist-prepare' ) );
-		} elseif ( $input->getOption( 'zip' ) ) {
-			$commands[] = new ArrayInput( array( 'command' => 'afl:bob:zip-plugin' ) );
+				if ( ! Helper::verify_plugin_version( $input->getOption( 'verify-version' ) ) ) {
+					$output->writeln( 'Verify Plugin Version: ' . $input->getOption( 'verify-version' ) );
+					$output->writeln( 'Current Plugin Version: ' . Helper::get_plugin_version() );
+					throw new \RuntimeException( 'Failed plugin version verification.' );
+				}
+			}
+
+			$commands = array(
+				new ArrayInput( array( 'command' => 'afl:bob:scope' ) ),
+			);
+
+			if ( $input->getOption( 'dist' ) ) {
+				$commands[] = new ArrayInput( array( 'command' => 'afl:bob:dist-prepare' ) );
+			} elseif ( $input->getOption( 'zip' ) ) {
+				$commands[] = new ArrayInput( array( 'command' => 'afl:bob:zip-plugin' ) );
+			}
+
+			$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
+		} catch ( \RuntimeException $th ) {
+			$output->writeln( '<error>' . $th->getMessage() . '</error>' );
+			$exit_code = 1;
 		}
-
-		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 
 		$output->writeln( '' );
 		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
