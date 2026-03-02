@@ -12,6 +12,8 @@ namespace Appfromlab\Bob\Command;
 use Appfromlab\Bob\Helper;
 use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
@@ -57,34 +59,8 @@ class ZipPluginCommand extends BaseCommand {
 		$plugin_zip_name = $config['plugin_folder_name'] . '-' . $plugin_headers['Version'] . '.zip';
 		$plugin_zip_path = dirname( $config['paths']['plugin_distribution_dir'] ) . DIRECTORY_SEPARATOR . $plugin_zip_name;
 
-		// Delete zip file if it already exists to avoid confusion with old zip files.
-		if ( file_exists( $plugin_zip_path ) ) {
-			unlink( $plugin_zip_path );
-			$output->writeln( 'Deleted existing ../.afl-dist/<plugin_name>.zip' );
-		}
-
-		// Delete distribution folder if it exists to ensure a clean slate for zipping.
-		if ( Helper::safeToDelete( $destination_path, $plugin_dir_name, $destination_path ) ) {
-			$output->writeln( 'Deleted existing ../.afl-dist/<plugin_name>/ folder.' );
-		} else {
-			$output->writeln( 'Failed to delete ../.afl-dist/<plugin_name>/ folder.' );
-		}
-
-		// Copy plugin folder to distribution folder for zipping.
-		if ( Helper::copyDirectory(
-			$source_path,
-			$destination_path,
-			array(
-				'exclude_from' => $config['paths']['plugin_distribution_ignore_file'],
-			)
-		) ) {
-			$output->writeln( 'Copied plugin folder to ../.afl-dist/<plugin_name>/ folder.' );
-		} else {
-			$output->writeln( '<error>Failed to copy plugin folder to ../.afl-dist/<plugin_name>/ folder.</error>' );
-			return 1;
-		}
-
 		$commands = array(
+			new ArrayInput( array( 'command' => 'afl:bob:dist-prepare' ) ),
 			new Process(
 				array(
 					'zip',
@@ -94,16 +70,10 @@ class ZipPluginCommand extends BaseCommand {
 				),
 				dirname( $config['paths']['plugin_distribution_dir'] ) // Set working directory to the parent of the destination path so that the zip contains the plugin folder, not the full path.
 			),
+			new ArrayInput( array( 'command' => 'afl:bob:dist-clean' ) ),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
-
-		// Delete the distribution folder after zipping to clean up.
-		if ( Helper::safeToDelete( $destination_path, $plugin_dir_name, $destination_path ) ) {
-			$output->writeln( 'Deleted existing ../.afl-dist/<plugin_name>/ folder.' );
-		} else {
-			$output->writeln( 'Failed to delete ../.afl-dist/<plugin_name>/ folder.' );
-		}
 
 		if ( 0 === $exit_code && file_exists( $plugin_zip_path ) ) {
 			$output->writeln( '<info>Created plugin zip</info>: ' . $plugin_zip_path . '' );
