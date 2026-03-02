@@ -52,16 +52,16 @@ class DistCleanCommand extends BaseCommand {
 		// Get configuration.
 		$config = Helper::getConfig();
 
-		$destination_path = $config['paths']['plugin_distribution_dir'];
+		$destination_path = $config['paths']['plugin_distribution_dir'] . $config['plugin_folder_name'] . DIRECTORY_SEPARATOR;
 		$plugin_dir_name  = $config['plugin_folder_name'];
 
 		try {
 
 			// Delete the distribution folder.
 			if ( Helper::safeToDelete( $destination_path, $plugin_dir_name, $destination_path ) ) {
-				$output->writeln( 'Deleted existing ../.afl-dist/<plugin_name>/ folder.' );
+				$output->writeln( 'Deleted existing folder: ' . $destination_path );
 			} elseif ( file_exists( $destination_path ) ) {
-				throw new \RuntimeException( 'Failed to delete ../.afl-dist/<plugin_name>/ folder.' );
+				throw new \RuntimeException( 'Failed to delete existing folder: ' . $destination_path );
 			}
 		} catch ( \RuntimeException $th ) {
 			$exit_code = 1;

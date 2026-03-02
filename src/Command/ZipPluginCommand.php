@@ -52,12 +52,9 @@ class ZipPluginCommand extends BaseCommand {
 		$config         = Helper::getConfig();
 		$plugin_headers = Helper::getPluginHeaders( $config['paths']['plugin_file'] );
 
-		$source_path      = $config['paths']['plugin_dir'];
-		$destination_path = $config['paths']['plugin_distribution_dir'];
-
 		$plugin_dir_name = $config['plugin_folder_name'];
 		$plugin_zip_name = $config['plugin_folder_name'] . '-' . $plugin_headers['Version'] . '.zip';
-		$plugin_zip_path = dirname( $config['paths']['plugin_distribution_dir'] ) . DIRECTORY_SEPARATOR . $plugin_zip_name;
+		$plugin_zip_path = $config['paths']['plugin_distribution_dir'] . $plugin_zip_name;
 
 		$commands = array(
 			new ArrayInput( array( 'command' => 'afl:bob:dist-prepare' ) ),
@@ -68,7 +65,7 @@ class ZipPluginCommand extends BaseCommand {
 					$plugin_zip_name,
 					$plugin_dir_name . '/', // Trailing slash to ensure contents are zipped with the plugin folder as the root, not the full path.
 				),
-				dirname( $config['paths']['plugin_distribution_dir'] ) // Set working directory to the parent of the destination path so that the zip contains the plugin folder, not the full path.
+				$config['paths']['plugin_distribution_dir']
 			),
 			new ArrayInput( array( 'command' => 'afl:bob:dist-clean' ) ),
 		);
@@ -76,9 +73,10 @@ class ZipPluginCommand extends BaseCommand {
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 
 		if ( 0 === $exit_code && file_exists( $plugin_zip_path ) ) {
-			$output->writeln( '<info>Created plugin zip</info>: ' . $plugin_zip_path . '' );
+			$output->writeln( '<info>Created plugin zip at:</info> ' . $plugin_zip_path );
 		} else {
-			$output->writeln( '<error>Failed to create plugin zip.</error>' );
+			$exit_code = 1;
+			$output->writeln( '<error>Failed to create plugin zip at:</error> ' . $plugin_zip_path . '.' );
 		}
 
 		$output->writeln( '' );
