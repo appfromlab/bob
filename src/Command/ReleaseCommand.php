@@ -14,6 +14,7 @@ use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
@@ -32,7 +33,13 @@ class ReleaseCommand extends BaseCommand {
 	protected function configure(): void {
 		$this->setName( 'afl:bob:release' )
 			->setDescription( 'Run build, bump version, generate readme.txt and make-pot.' )
-			->addArgument( 'version', null, InputArgument::REQUIRED, 'The new version number (e.g. 1.2.3). Must be higher than the current plugin version.' );
+			->addArgument( 'version', null, InputArgument::REQUIRED, 'The new version number (e.g. 1.2.3). Must be higher than the current plugin version.' )
+			->addOption(
+				'zip',
+				null,
+				InputOption::VALUE_NONE,
+				'Also create a zip archive of the plugin for distribution after building.'
+			);
 	}
 
 	/**
@@ -53,7 +60,7 @@ class ReleaseCommand extends BaseCommand {
 		$commands = array(
 			new ArrayInput(
 				array(
-					'command'   => 'afl:bob:bump-version',
+					'command' => 'afl:bob:bump-version',
 					'version' => $input->getArgument( 'version' ),
 				)
 			),
@@ -61,6 +68,10 @@ class ReleaseCommand extends BaseCommand {
 			new ArrayInput( array( 'command' => 'afl:bob:readme-generator' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:make-pot' ) ),
 		);
+
+		if ( $input->getOption( 'zip' ) ) {
+			$commands[] = new ArrayInput( array( 'command' => 'afl:bob:zip-plugin' ) );
+		}
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 

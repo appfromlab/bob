@@ -38,6 +38,12 @@ class BuildCommand extends BaseCommand {
 				null,
 				InputOption::VALUE_NONE,
 				'Also create a zip archive of the plugin for distribution after building.'
+			)
+			->addOption(
+				'dist',
+				null,
+				InputOption::VALUE_NONE,
+				'Prepare the plugin folder for distribution by copying necessary files to a dist/ directory after building.'
 			);
 	}
 
@@ -64,7 +70,9 @@ class BuildCommand extends BaseCommand {
 			new ArrayInput( array( 'command' => 'afl:bob:scope' ) ),
 		);
 
-		if ( $input->getOption( 'zip' ) ) {
+		if ( $input->getOption( 'dist' ) ) {
+			$commands[] = new ArrayInput( array( 'command' => 'afl:bob:dist-prepare' ) );
+		} elseif ( $input->getOption( 'zip' ) ) {
 			$commands[] = new ArrayInput( array( 'command' => 'afl:bob:zip-plugin' ) );
 		}
 
