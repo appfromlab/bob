@@ -53,7 +53,7 @@ class DistPrepareCommand extends BaseCommand {
 		$plugin_headers = Helper::getPluginHeaders( $config['paths']['plugin_file'] );
 
 		$source_path      = $config['paths']['plugin_dir'];
-		$destination_path = $config['paths']['plugin_distribution_dir'];
+		$destination_path = $config['paths']['plugin_distribution_dir'] . $config['plugin_folder_name'] . DIRECTORY_SEPARATOR;
 
 		$plugin_dir_name = $config['plugin_folder_name'];
 		$plugin_zip_name = $config['plugin_folder_name'] . '-' . $plugin_headers['Version'] . '.zip';
@@ -64,15 +64,18 @@ class DistPrepareCommand extends BaseCommand {
 			// Delete zip file if it already exists to avoid confusion with old zip files.
 			if ( file_exists( $plugin_zip_path ) ) {
 				unlink( $plugin_zip_path );
-				$output->writeln( 'Deleted existing ../.afl-dist/<plugin_name>.zip' );
+				$output->writeln( 'Deleted existing zip: ' . $plugin_zip_path );
 			}
 
 			// Delete distribution folder if it exists to ensure a clean slate for zipping.
 			if ( Helper::safeToDelete( $destination_path, $plugin_dir_name, $destination_path ) ) {
-				$output->writeln( 'Deleted existing ../.afl-dist/<plugin_name>/ folder.' );
+				$output->writeln( 'Deleted existing folder: ' . $destination_path );
 			} elseif ( file_exists( $destination_path ) ) {
-				throw new \Exception( 'Failed to delete existing distribution folder.' );
+				throw new \Exception( 'Failed to delete existing folder: ' . $destination_path );
 			}
+
+			$output->writeln( 'Source: ' . $source_path );
+			$output->writeln( 'Destination: ' . $destination_path );
 
 			// Copy plugin folder to distribution folder for zipping.
 			if ( Helper::copyDirectory(
@@ -82,10 +85,10 @@ class DistPrepareCommand extends BaseCommand {
 					'exclude_from' => $config['paths']['plugin_distribution_ignore_file'],
 				)
 			) ) {
-				$output->writeln( 'Copied plugin folder to ../.afl-dist/<plugin_name>/ folder.' );
+				$output->writeln( '<info>Copied plugin folder to:</info> ' . $destination_path );
 				$exit_code = 0;
 			} else {
-				$output->writeln( '<error>Failed to copy plugin folder to ../.afl-dist/<plugin_name>/ folder.</error>' );
+				$output->writeln( '<error>Failed to copy plugin folder to:</error> ' . $destination_path );
 				$exit_code = 1;
 			}
 		} catch ( \Throwable $th ) {
