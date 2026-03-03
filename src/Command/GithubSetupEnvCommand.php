@@ -1,6 +1,6 @@
 <?php
 /**
- * Setup Github Environment Variables Command
+ * Github Setup Environment Variables Command
  *
  * Sets up GitHub Actions environment variables for the plugin including
  * folder name, version number, and distribution directory path.
@@ -18,7 +18,7 @@ use Composer\Command\BaseCommand;
 /**
  * Setup GitHub environment variables for use in GitHub Actions
  */
-class SetupGithubEnvCommand extends BaseCommand {
+class GithubSetupEnvCommand extends BaseCommand {
 
 	/**
 	 * Configure the command
@@ -28,8 +28,8 @@ class SetupGithubEnvCommand extends BaseCommand {
 	 * @return void
 	 */
 	protected function configure(): void {
-		$this->setName( 'afl:bob:setup-github-env' )
-			->setDescription( 'Setup GitHub Actions environment variables: PLUGIN_FOLDER_NAME, PLUGIN_VERSION_NUMBER, PLUGIN_DIST_DIR.' );
+		$this->setName( 'afl:bob:github-setup-env' )
+			->setDescription( 'Setup GitHub Actions environment variables: AFL_PLUGIN_FOLDER_NAME, AFL_PLUGIN_VERSION_NUMBER, AFL_PLUGIN_DIST_DIR.' );
 	}
 
 	/**
@@ -66,9 +66,9 @@ class SetupGithubEnvCommand extends BaseCommand {
 			}
 
 			$env_entries = array(
-				'PLUGIN_FOLDER_NAME'    => $plugin_folder_name,
-				'PLUGIN_VERSION_NUMBER' => $plugin_version_number,
-				'PLUGIN_DIST_DIR'       => $plugin_dist_dir,
+				'AFL_PLUGIN_FOLDER_NAME'    => $plugin_folder_name,
+				'AFL_PLUGIN_VERSION_NUMBER' => $plugin_version_number,
+				'AFL_PLUGIN_DIST_DIR'       => $plugin_dist_dir,
 			);
 
 			$file_handle = fopen( $github_env, 'a' );
