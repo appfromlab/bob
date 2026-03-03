@@ -18,6 +18,7 @@ use Appfromlab\Bob\Command\DeleteVendorPrefixedCommand;
 use Appfromlab\Bob\Command\DistCleanCommand;
 use Appfromlab\Bob\Command\DistPrepareCommand;
 use Appfromlab\Bob\Command\GenerateReadmeCommand;
+use Appfromlab\Bob\Command\GithubSetupEnvCommand;
 use Appfromlab\Bob\Command\HelloCommand;
 use Appfromlab\Bob\Command\InstallWpcliCommand;
 use Appfromlab\Bob\Command\LintCommand;
@@ -56,6 +57,7 @@ class CommandProvider implements CommandProviderCapability {
 			new DistPrepareCommand(),
 			new DistCleanCommand(),
 			new GenerateReadmeCommand(),
+			new GithubSetupEnvCommand(),
 			new HelloCommand(),
 			new InstallWpcliCommand(),
 			new LintCommand(),

@@ -50,6 +50,12 @@ class BuildCommand extends BaseCommand {
 				null,
 				InputOption::VALUE_OPTIONAL,
 				'Verify the plugin version before building.'
+			)
+			->addOption(
+				'github-setup-env',
+				null,
+				InputOption::VALUE_NONE,
+				'Setup GitHub Actions environment variables after building.'
 			);
 	}
 
@@ -91,6 +97,10 @@ class BuildCommand extends BaseCommand {
 				$commands[] = new ArrayInput( array( 'command' => 'afl:bob:dist-prepare' ) );
 			} elseif ( $input->getOption( 'zip' ) ) {
 				$commands[] = new ArrayInput( array( 'command' => 'afl:bob:zip-plugin' ) );
+			}
+
+			if ( $input->getOption( 'github-setup-env' ) ) {
+				$commands[] = new ArrayInput( array( 'command' => 'afl:bob:github-setup-env' ) );
 			}
 
 			$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
