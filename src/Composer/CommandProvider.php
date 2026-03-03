@@ -30,6 +30,7 @@ use Appfromlab\Bob\Command\PluginRenamerCopyConfigCommand;
 use Appfromlab\Bob\Command\ReleaseCommand;
 use Appfromlab\Bob\Command\RequireDevGlobalCommand;
 use Appfromlab\Bob\Command\ScopeCommand;
+use Appfromlab\Bob\Command\SetupGithubEnvCommand;
 use Appfromlab\Bob\Command\ZipPluginCommand;
 
 /**
@@ -68,6 +69,7 @@ class CommandProvider implements CommandProviderCapability {
 			new ReleaseCommand(),
 			new RequireDevGlobalCommand(),
 			new ScopeCommand(),
+			new SetupGithubEnvCommand(),
 			new ZipPluginCommand(),
 		);
 	}
