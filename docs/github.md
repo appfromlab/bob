@@ -1,15 +1,15 @@
 # Github
 
-## Github Actions
+## Enviroment Variables
 
-For GitHub Actions to work correctly, you need to set up some environment variables in your repository settings.
+You will have access to these variables in your GitHub Actions workflow using the `env` context.
 
-### Create Enviroment Variables
+For example, you can reference them as `${{ env.AFL_PLUGIN_FOLDER_NAME }}` in your workflow file.
 
-In your GitHub repository, navigate to `Settings` > `Secrets and variables` > `Actions` > `Variables` tab.
+Environment variables are set after `composer build -- --github-setup-env` command is executed.
 
-Under the Repository Variables section, create the following variables:
-
-| Name                | Value                  | Description                                 |
-|---------------------|------------------------|---------------------------------------------|
-| PLUGIN_FOLDER_NAME  | your-plugin-slug       | The folder name of your plugin				 |
+| Name                       | Value                            | Description                                    |
+|----------------------------|----------------------------------|------------------------------------------------|
+| AFL_PLUGIN_FOLDER_NAME     | your-plugin-slug                 | The folder name of your plugin                 |
+| AFL_PLUGIN_VERSION_NUMBER  | 1.0.0                            | The version number of your plugin              |
+| AFL_PLUGIN_DIST_DIR        | /home/../.afl-dist/<plugin_name> | The distribution folder path of your plugin    |
