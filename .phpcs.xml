@@ -18,6 +18,7 @@
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="Appfromlab\Bob"/>
+				<element value="afl_bob"/>
 			</property>
 		</properties>
 	</rule>
