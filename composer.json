@@ -20,6 +20,7 @@
         "class": "Appfromlab\\Bob\\Composer\\BobPlugin"
     },
     "require": {
+        "php": ">=8.4",
         "composer-plugin-api": "^2.9.0",
         "symfony/process": "^8.0.5"
     },
