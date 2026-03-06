@@ -1,9 +1,8 @@
 <?php
 /**
- * First Time Command
+ * New Plugin Command
  *
- * Performs initial setup for a new plugin installation by copying configuration
- * file and deleting the composer.lock file.
+ * Performs initial setup for a new plugin installation.
  *
  * @package Appfromlab\Bob\Command
  */
@@ -36,8 +35,6 @@ class NewPluginCommand extends BaseCommand {
 	/**
 	 * Execute the command
 	 *
-	 * Performs first-time setup for a new plugin installation.
-	 *
 	 * @param InputInterface  $input  The input interface.
 	 * @param OutputInterface $output The output interface.
 	 * @return int Exit code (0 for success, non-zero for failure).
@@ -53,6 +50,13 @@ class NewPluginCommand extends BaseCommand {
 			new ArrayInput( array( 'command' => 'afl:bob:delete-composer-lock' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:install-wpcli' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:require-dev-global' ) ),
+			new ArrayInput(
+				array(
+					'command'        => 'afl:bob:bump-version',
+					'version'        => '0.0.1',
+					'--skip-compare' => true,
+				)
+			),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );

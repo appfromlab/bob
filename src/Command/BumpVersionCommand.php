@@ -4,6 +4,7 @@ namespace Appfromlab\Bob\Command;
 use Appfromlab\Bob\Helper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 
@@ -25,7 +26,8 @@ class BumpVersionCommand extends BaseCommand {
 	protected function configure(): void {
 		$this->setName( 'afl:bob:bump-version' )
 			->setDescription( 'Bump plugin version using value from plugin header.' )
-			->addArgument( 'version', null, InputArgument::REQUIRED, 'The new version number (e.g. 1.2.3). Must be higher than the current plugin version.' );
+			->addArgument( 'version', null, InputArgument::REQUIRED, 'The new version number (e.g. 1.2.3). Must be higher than the current plugin version.' )
+			->addOption( 'skip-compare', null, InputOption::VALUE_NONE, 'Skip comparison with the current version.' );
 	}
 
 	/**
@@ -62,7 +64,8 @@ class BumpVersionCommand extends BaseCommand {
 			}
 
 			// Ensure new version is strictly greater than current version.
-			if ( version_compare( $new_version, $current_version, '<=' ) ) {
+			// Allow bypassing this check with --skip-compare for cases like resetting to a previous version or if the version in the header was incorrect.
+			if ( version_compare( $new_version, $current_version, '<=' ) && ! $input->getOption( 'skip-compare' ) ) {
 				$output->writeln( "<error>ERROR: Version {$new_version} is not higher than the current plugin version {$current_version}.</error>" );
 				return 1;
 			}
