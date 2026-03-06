@@ -12,12 +12,6 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
-            "@composer bin all install"
-        ],
-        "post-update-cmd": [
-            "@composer bin all update"
-        ],
         "lint": [
             "@bob afl:bob:lint"
         ],
