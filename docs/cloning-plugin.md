@@ -6,6 +6,7 @@ After you have clone your project from Github to your local computer, run the fo
 
 ```bash
 composer install
+composer bin all install
 composer bob afl:bob:install-wpcli
 composer bob afl:bob:require-dev-global
 ```
