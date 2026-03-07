@@ -74,22 +74,21 @@ class GithubSetupEnvCommand extends BaseCommand {
 			$file_handle = fopen( $github_env, 'a' );
 
 			if ( false === $file_handle ) {
-				throw new \RuntimeException( 'Failed to open GITHUB_ENV file: ' . $github_env );
+				throw new \RuntimeException( 'Failed to open GITHUB_ENV file.' );
 			}
 
 			try {
 				foreach ( $env_entries as $name => $value ) {
 					fwrite( $file_handle, $name . '=' . $value . "\n" );
-					$output->writeln( $name . '=' . $value );
 				}
 			} finally {
 				fclose( $file_handle );
 			}
 
 			$output->writeln( '' );
-			$output->writeln( '<info>GitHub environment variables written to:</info> ' . $github_env );
+			$output->writeln( '<info>Successfully setup GitHub environment variables.</info>' );
 		} catch ( \RuntimeException $th ) {
-			$output->writeln( '<error>' . $th->getMessage() . '</error>' );
+			$output->writeln( '<error>Failed to setup GitHub environment variables.</error>' );
 			$exit_code = 1;
 		}
 
