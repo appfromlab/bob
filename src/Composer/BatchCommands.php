@@ -12,13 +12,8 @@ namespace Appfromlab\Bob\Composer;
 
 use Appfromlab\Bob\Helper;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
-use function chdir;
-use function getcwd;
-use function is_a;
 
 /**
  * Batch command executor
@@ -37,7 +32,8 @@ class BatchCommands {
 	 * @param Application           $application Instance of application.
 	 * @param array<InputInterface> $commands Array of commands to execute.
 	 * @param OutputInterface       $output   Output interface for displaying results.
-	 * @return int Exit code (0 for success, non-zero for failure).
+	 * @return int                  Exit code (0 for success, non-zero for failure).
+	 * @throws \RuntimeException    If any command fails during execution.
 	 */
 	public static function run( Application $application, array $commands, OutputInterface $output ): int {
 
@@ -54,16 +50,19 @@ class BatchCommands {
 
 				if ( is_a( $single_command, 'Symfony\Component\Console\Input\ArrayInput' ) ) {
 
-					$output->writeln( '<info>Command:</info> ' . (string) $single_command );
+					$output->writeln( '' );
+					$output->writeln( '<info>COMMAND:</info> ' . (string) $single_command );
+					$output->writeln( '' );
 
 					$exit_code = $application->run( $single_command, $output );
 
 					if ( 0 !== $exit_code ) {
-						throw new \Error( '<error>Command Failed:</error> ' . (string) $single_command, $exit_code );
+						throw new \RuntimeException( 'Command Failed.', $exit_code );
 					}
 				} elseif ( is_a( $single_command, 'Symfony\Component\Process\Process' ) ) {
 
-					$output->writeln( '<info>Process:</info> ' . $single_command->getCommandLine() );
+					$output->writeln( '' );
+					$output->writeln( '<info>PROCESS:</info> ' . $single_command->getCommandLine() );
 					$output->writeln( '' );
 
 					$exit_code = $single_command->run(
@@ -77,15 +76,15 @@ class BatchCommands {
 					if ( is_array( $env ) && array_key_exists( 'AFL_BOB_FORCE_EXIT_0', $env ) ) {
 						$exit_code = 0;
 					} elseif ( ! $single_command->isSuccessful() ) {
-						throw new \Error( '<error>Process Failed:</error> ' . $single_command->getCommandLine(), $exit_code );
+						throw new \RuntimeException( 'Process Failed.', $exit_code );
 					}
 				} else {
-					throw new \Error( '<error>Command is not of type ArrayInput or Process.</error>', 1 );
+					throw new \RuntimeException( 'Command is not of type ArrayInput or Process.', 1 );
 				}
 			}
-		} catch ( \Throwable $th ) {
+		} catch ( \RuntimeException $th ) {
 
-			$output->writeln( $th->getMessage() );
+			$output->writeln( '<error>ERROR:</error> ' . $th->getMessage() );
 
 			return $th->getCode();
 		}
