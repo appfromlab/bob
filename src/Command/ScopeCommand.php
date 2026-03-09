@@ -106,6 +106,17 @@ class ScopeCommand extends BaseCommand {
 
 		$commands = array(
 			new Process(
+				// Install only production dependencies in plugin root folder.
+				array(
+					'composer',
+					'install',
+					'--no-dev',
+					'--prefer-dist',
+				),
+				// set current working directory.
+				$config['paths']['plugin_dir']
+			),
+			new Process(
 				// Run PHP-Scoper with Stage 1 configuration to prefix vendor dependencies.
 				array(
 					'php',
@@ -134,6 +145,15 @@ class ScopeCommand extends BaseCommand {
 					$scoper_bin_path,
 					'add-prefix',
 					'--config=' . $scoper_config_2_path,
+				),
+				// set current working directory.
+				$config['paths']['plugin_dir']
+			),
+			new Process(
+				// Restore dev dependencies in plugin root folder.
+				array(
+					'composer',
+					'install',
 				),
 				// set current working directory.
 				$config['paths']['plugin_dir']
