@@ -11,7 +11,6 @@
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
-use Appfromlab\Bob\HelperScoper;
 use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -104,93 +103,115 @@ class ScopeCommand extends BaseCommand {
 			return 1;
 		}
 
-		$commands = array(
-			new Process(
-				// Install only production dependencies in plugin root folder.
-				array(
-					'composer',
-					'install',
-					'--no-dev',
-					'--prefer-dist',
-				),
-				// set current working directory.
-				$config['paths']['plugin_dir']
-			),
-			new Process(
-				// Run PHP-Scoper with Stage 1 configuration to prefix vendor dependencies.
-				array(
-					'php',
-					$scoper_bin_path,
-					'add-prefix',
-					'--config=' . $scoper_config_1_path,
-				),
-				// set current working directory.
-				$config['paths']['plugin_dir']
-			),
-			new Process(
-				// go into .afl-scoper-build dir and dump autoload there to generate new optimized autoload files for the prefixed vendor.
-				array(
-					'composer',
-					'dump-autoload',
-					'--no-dev',
-					'--no-scripts',
-				),
-				// set current working directory.
-				$config['paths']['plugin_scoper_build_dir']
-			),
-			new Process(
-				// Run PHP-Scoper with Stage 2 configuration to prefix vendor/composer folder.
-				array(
-					'php',
-					$scoper_bin_path,
-					'add-prefix',
-					'--config=' . $scoper_config_2_path,
-				),
-				// set current working directory.
-				$config['paths']['plugin_dir']
-			),
-			new Process(
-				// Restore dev dependencies in plugin root folder.
-				array(
-					'composer',
-					'install',
-				),
-				// set current working directory.
-				$config['paths']['plugin_dir']
-			),
-		);
+		try {
 
-		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
+			$commands = array(
+				new Process(
+					// Install only production dependencies in plugin root folder.
+					array(
+						'composer',
+						'install',
+						'--no-dev',
+						'--prefer-dist',
+					),
+					// set current working directory.
+					$config['paths']['plugin_dir']
+				),
+				new Process(
+					// Run PHP-Scoper with Stage 1 configuration to prefix vendor dependencies.
+					array(
+						'php',
+						$scoper_bin_path,
+						'add-prefix',
+						'--config=' . $scoper_config_1_path,
+					),
+					// set current working directory.
+					$config['paths']['plugin_dir']
+				),
+				new Process(
+					// go into .afl-scoper-build dir and dump autoload there to generate new optimized autoload files for the prefixed vendor.
+					array(
+						'composer',
+						'dump-autoload',
+						'--no-dev',
+						'--no-scripts',
+					),
+					// set current working directory.
+					$config['paths']['plugin_scoper_build_dir']
+				),
+				new Process(
+					// Run PHP-Scoper with Stage 2 configuration to prefix vendor/composer folder.
+					array(
+						'php',
+						$scoper_bin_path,
+						'add-prefix',
+						'--config=' . $scoper_config_2_path,
+					),
+					// set current working directory.
+					$config['paths']['plugin_dir']
+				),
+				new Process(
+					// Restore dev dependencies in plugin root folder.
+					array(
+						'composer',
+						'install',
+					),
+					// set current working directory.
+					$config['paths']['plugin_dir']
+				),
+			);
 
-		if ( 0 !== $exit_code ) {
-			$output->writeln( '<error>Failed to process PHP-Scoper.</error>' );
-			return $exit_code;
+			$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
+
+			if ( 0 !== $exit_code ) {
+				throw new \RuntimeException( 'Failed to process PHP-Scoper.', $exit_code );
+			}
+
+			// Copy the scoped vendor files from .afl-scoper-build/<plugin_name>/vendor-prefixed/ to the plugin directory.
+			$source_vendor_prefixed_path      = $config['paths']['plugin_scoper_build_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR;
+			$destination_vendor_prefixed_path = $config['paths']['plugin_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR;
+
+			if ( Helper::copyDirectory(
+				$source_vendor_prefixed_path,
+				$destination_vendor_prefixed_path,
+				array(
+					'cwd' => $config['paths']['plugin_dir'],
+				)
+			) ) {
+				$output->writeln( 'Files copied to ./vendor-prefixed folder.' );
+			} else {
+				throw new \RuntimeException( 'Failed to copy files to ./vendor-prefixed folder.', $exit_code );
+			}
+
+			// Run PHPCBF on vendor-prefixed folder.
+			$commands = array(
+				new ArrayInput( array( 'command' => 'afl:bob:phpcbf-vendor-prefixed' ) ),
+			);
+
+			$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
+		} catch (\RuntimeException $th) {
+
+			$exit_code = $th->getCode();
+			$output->writeln( '<error>FAILED:</error> ' . $th->getMessage() );
+			$output->writeln( '<error>Exit Code:</error> ' . $exit_code );
+		} finally {
+
+			// Clean up build directories after scoping.
+			$cleanup_commands = array(
+				new Process(
+					// Restore dev dependencies in plugin root folder.
+					array(
+						'composer',
+						'install',
+					),
+					// set current working directory.
+					$config['paths']['plugin_dir']
+				),
+				new ArrayInput( array( 'command' => 'afl:bob:delete-scoper-build' ) ),
+			);
+
+			BatchCommands::run( $this->getApplication(), $cleanup_commands, $output );
 		}
-
-		// Copy the scoped vendor files from .afl-scoper-build/<plugin_name>/vendor-prefixed/ to the plugin directory.
-		$source_vendor_prefixed_path      = $config['paths']['plugin_scoper_build_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR;
-		$destination_vendor_prefixed_path = $config['paths']['plugin_dir'] . 'vendor-prefixed' . DIRECTORY_SEPARATOR;
-
-		if ( Helper::copyDirectory(
-			$source_vendor_prefixed_path,
-			$destination_vendor_prefixed_path,
-			array(
-				'cwd' => $config['paths']['plugin_dir'],
-			)
-		) ) {
-			$output->writeln( 'Files copied to ./vendor-prefixed folder.' );
-		} else {
-			$output->writeln( '<error>Failed to copy files to ./vendor-prefixed folder.</error>' );
-			return 1;
-		}
-
-		// Run PHPCBF on vendor-prefixed folder and clean up build directories after scoping.
-		$commands = array(
-			new ArrayInput( array( 'command' => 'afl:bob:phpcbf-vendor-prefixed' ) ),
-			new ArrayInput( array( 'command' => 'afl:bob:delete-scoper-build' ) ),
-		);
-
-		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
 
 		$output->writeln( '' );
 		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
