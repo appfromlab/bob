@@ -59,8 +59,7 @@ return array(
 	'file_list'   => array(
 		'afl-plugin-boilerplate.php',
 		'composer.json',
-		'readme.txt',
 		'.phpcs.xml',
-		'.scoper.inc.php',
+		'AGENTS.md',
 	),
 );
