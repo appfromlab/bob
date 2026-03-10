@@ -115,7 +115,10 @@ class ScopeCommand extends BaseCommand {
 						'--prefer-dist',
 					),
 					// set current working directory.
-					$config['paths']['plugin_dir']
+					$config['paths']['plugin_dir'],
+					null,
+					null,
+					Helper::get_process_timeout( 'install' ),
 				),
 				new Process(
 					// Run PHP-Scoper with Stage 1 configuration to prefix vendor dependencies.
@@ -126,7 +129,10 @@ class ScopeCommand extends BaseCommand {
 						'--config=' . $scoper_config_1_path,
 					),
 					// set current working directory.
-					$config['paths']['plugin_dir']
+					$config['paths']['plugin_dir'],
+					null,
+					null,
+					Helper::get_process_timeout( 'php-scoper' ),
 				),
 				new Process(
 					// go into .afl-scoper-build dir and dump autoload there to generate new optimized autoload files for the prefixed vendor.
@@ -137,7 +143,10 @@ class ScopeCommand extends BaseCommand {
 						'--no-scripts',
 					),
 					// set current working directory.
-					$config['paths']['plugin_scoper_build_dir']
+					$config['paths']['plugin_scoper_build_dir'],
+					null,
+					null,
+					Helper::get_process_timeout( 'default' ),
 				),
 				new Process(
 					// Run PHP-Scoper with Stage 2 configuration to prefix vendor/composer folder.
@@ -148,7 +157,10 @@ class ScopeCommand extends BaseCommand {
 						'--config=' . $scoper_config_2_path,
 					),
 					// set current working directory.
-					$config['paths']['plugin_dir']
+					$config['paths']['plugin_dir'],
+					null,
+					null,
+					Helper::get_process_timeout( 'php-scoper' ),
 				),
 				new Process(
 					// Restore dev dependencies in plugin root folder.
@@ -157,7 +169,10 @@ class ScopeCommand extends BaseCommand {
 						'install',
 					),
 					// set current working directory.
-					$config['paths']['plugin_dir']
+					$config['paths']['plugin_dir'],
+					null,
+					null,
+					Helper::get_process_timeout( 'install' ),
 				),
 			);
 
@@ -205,7 +220,10 @@ class ScopeCommand extends BaseCommand {
 						'install',
 					),
 					// set current working directory.
-					$config['paths']['plugin_dir']
+					$config['paths']['plugin_dir'],
+					null,
+					null,
+					Helper::get_process_timeout( 'install' ),
 				),
 				new ArrayInput( array( 'command' => 'afl:bob:delete-scoper-build' ) ),
 			);
