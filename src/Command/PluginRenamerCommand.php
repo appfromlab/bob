@@ -22,6 +22,7 @@ namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
 use Appfromlab\Bob\Composer\BatchCommands;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
@@ -266,6 +267,8 @@ class PluginRenamerCommand extends BaseCommand {
 				),
 				$config['paths']['plugin_dir'],
 			),
+			new ArrayInput( array( 'command' => 'afl:bob:readme-generator' ) ),
+			new ArrayInput( array( 'command' => 'afl:bob:make-pot' ) ),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
