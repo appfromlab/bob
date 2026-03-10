@@ -260,6 +260,16 @@ class PluginRenamerCommand extends BaseCommand {
 				$config['paths']['plugin_dir'],
 			),
 			new Process(
+				// we need to populate back the vendor/bin folder with the dev tools.
+				array(
+					'composer',
+					'bin',
+					'all',
+					'install',
+				),
+				$config['paths']['plugin_dir'],
+			),
+			new Process(
 				// build the plugin after renaming.
 				array(
 					'composer',
