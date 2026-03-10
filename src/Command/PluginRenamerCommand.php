@@ -5,14 +5,26 @@
  * Renames all occurrences of plugin identifiers (namespace, prefixes, constants, etc.)
  * throughout the plugin codebase based on configuration file specifications.
  *
+ * The command performs the following steps:
+ *
+ * 1. Loads .afl-extra/config/plugin-renamer-config.php for new plugin identifiers.
+ * 2. Validates the configuration file for required keys and values.
+ * 3. Scans specified folders and files for PHP files to be renamed.
+ * 4. Replaces old plugin identifiers with new ones in the content of each file.
+ * 5. Deletes the existing language pot file, composer.lock file, vendor folder, and vendor-prefixed folder.
+ * 6. Renames the main plugin file to match the new plugin name.
+ * 7. Runs composer install and composer build to finalize the renaming process.
+ *
  * @package Appfromlab\Bob\Command
  */
 
 namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
+use Appfromlab\Bob\Composer\BatchCommands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 use Composer\Command\BaseCommand;
 
 /**
@@ -84,7 +96,7 @@ class PluginRenamerCommand extends BaseCommand {
 
 		// Auto create name for dash.
 		$default_config['name_list']['plugin_name_lowercase_dashes'] = str_replace( '_', '-', $default_config['name_list']['plugin_name_lowercase_underscore'] );
-		$new_config['name_list']['plugin_name_lowercase_dashes'] = str_replace( '_', '-', $new_config['name_list']['plugin_name_lowercase_underscore'] );
+		$new_config['name_list']['plugin_name_lowercase_dashes']     = str_replace( '_', '-', $new_config['name_list']['plugin_name_lowercase_underscore'] );
 
 		// Check missing folder_list in user config.
 		if ( empty( $new_config['folder_list'] ) ) {
@@ -192,14 +204,37 @@ class PluginRenamerCommand extends BaseCommand {
 		}
 
 		// delete language pot file.
-		$current_pot_file_path = $config['paths']['plugin_language_dir'] . 'afl-plugin-boilerplate.pot';
+		if ( Helper::safeToDelete( $config['paths']['plugin_boilerplate_pot_file'], 'afl-plugin-boilerplate.pot', $config['paths']['plugin_language_dir'] ) ) {
+			$output->writeln( 'Deleted language pot file...' );
+		} else {
+			$output->writeln( '<warning>WARNING: Failed to delete afl-plugin-boilerplate.pot file.</warning>' );
+		}
 
-		Helper::safeToDelete( $current_pot_file_path, 'afl-plugin-boilerplate.pot', $config['paths']['plugin_language_dir'] );
+		// delete composer.lock file.
+		if ( Helper::safeToDelete( $config['paths']['plugin_composer_lock_file'], 'composer.lock', $config['paths']['plugin_dir'] ) ) {
+			$output->writeln( 'Deleted composer.lock file...' );
+		} else {
+			$output->writeln( '<warning>WARNING: Failed to delete composer.lock file.</warning>' );
+		}
+
+		// delete vendor folder.
+		if ( Helper::safeToDelete( $config['paths']['plugin_vendor_dir'], 'vendor', $config['paths']['plugin_dir'] ) ) {
+			$output->writeln( 'Deleted vendor folder...' );
+		} else {
+			$output->writeln( '<warning>WARNING: Failed to delete vendor folder.</warning>' );
+		}
+
+		// delete vendor-prefixed folder.
+		if ( Helper::safeToDelete( $config['paths']['plugin_vendor_prefixed_dir'], 'vendor-prefixed', $config['paths']['plugin_dir'] ) ) {
+			$output->writeln( 'Deleted vendor-prefixed folder...' );
+		} else {
+			$output->writeln( '<warning>WARNING: Failed to delete vendor-prefixed folder.</warning>' );
+		}
 
 		// finally rename main plugin file.
 		$new_plugin_file_name = basename( $config['paths']['plugin_dir'] );
 
-		$boilerplate_plugin_file_path = $config['paths']['plugin_dir'] . 'afl-plugin-boilerplate.php';
+		$boilerplate_plugin_file_path = $config['paths']['plugin_boilerplate_main_file'];
 		$new_plugin_file_path         = $config['paths']['plugin_dir'] . $new_plugin_file_name . '.php';
 
 		if ( ! file_exists( $boilerplate_plugin_file_path ) ) {
@@ -207,14 +242,42 @@ class PluginRenamerCommand extends BaseCommand {
 			return 1;
 		}
 
-		rename( $boilerplate_plugin_file_path, $new_plugin_file_path );
+		if ( rename( $boilerplate_plugin_file_path, $new_plugin_file_path ) ) {
+			$output->writeln( "Main plugin file was renamed to {$new_plugin_file_name}.php" );
+		} else {
+			$output->writeln( '<error>ERROR: Failed to rename main plugin file.</error>' );
+			return 1;
+		}
 
-		$output->writeln( "Main plugin file was renamed to {$new_plugin_file_name}.php" );
+		$commands = array(
+			new Process(
+				// run composer install because we have deleteed the composer.lock file and vendor folder.
+				array(
+					'composer',
+					'install',
+				),
+				$config['paths']['plugin_dir'],
+			),
+			new Process(
+				// build the plugin after renaming.
+				array(
+					'composer',
+					'build',
+				),
+				$config['paths']['plugin_dir'],
+			),
+		);
+
+		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
+
+		if ( 0 !== $exit_code ) {
+			$output->writeln( '<error>ERROR: Failed the plugin renamer process.</error>' );
+		}
 
 		$output->writeln( '' );
 		$output->writeln( '<info>--- [END] ' . __CLASS__ . '</info>' );
 		$output->writeln( '' );
 
-		return 0;
+		return $exit_code;
 	}
 }

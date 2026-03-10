@@ -47,7 +47,6 @@ class NewPluginCommand extends BaseCommand {
 
 		$commands = array(
 			new ArrayInput( array( 'command' => 'afl:bob:plugin-renamer-copy-config' ) ),
-			new ArrayInput( array( 'command' => 'afl:bob:delete-composer-lock' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:install-wpcli' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:require-dev-global' ) ),
 			new ArrayInput(

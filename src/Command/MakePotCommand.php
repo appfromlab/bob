@@ -12,6 +12,7 @@ namespace Appfromlab\Bob\Command;
 
 use Appfromlab\Bob\Helper;
 use Appfromlab\Bob\Composer\BatchCommands;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
@@ -52,20 +53,32 @@ class MakePotCommand extends BaseCommand {
 		// Get configuration.
 		$config = Helper::getConfig();
 
-		// Validate paths and configuration.
-		if ( ! file_exists( $config['paths']['plugin_bin_dir'] . 'wp-cli.phar' ) ) {
-			$output->writeln( '<error>ERROR: WP-CLI PHAR file not found at ./.bin/wp-cli.phar</error>' );
-			return 1;
-		}
-
-		if ( ! is_dir( $config['paths']['plugin_language_dir'] ) ) {
-			$output->writeln( '<error>ERROR: languages directory not found.</error>' );
-			return 1;
-		}
-
+		// Validate plugin folder name configuration.
 		if ( empty( $config['plugin_folder_name'] ) ) {
 			$output->writeln( '<error>ERROR: Plugin Folder Name not setup in composer.json.</error>' );
 			return 1;
+		}
+
+		// Create languages directory if it doesn't exist.
+		if ( ! is_dir( $config['paths']['plugin_language_dir'] ) ) {
+			mkdir( $config['paths']['plugin_language_dir'], 0774, true );
+		}
+
+		// Install WP-CLI locally if not found.
+		if ( ! file_exists( $config['paths']['plugin_bin_dir'] . 'wp-cli.phar' ) ) {
+
+			$commands = array(
+				new ArrayInput(
+					array( 'command' => 'afl:bob:install-wp-cli' )
+				),
+			);
+
+			$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
+
+			if ( 0 !== $exit_code ) {
+				$output->writeln( '<error>ERROR: Failed to install WP-CLI.</error>' );
+				return 1;
+			}
 		}
 
 		$commands = array(
