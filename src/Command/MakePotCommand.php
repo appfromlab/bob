@@ -91,6 +91,10 @@ class MakePotCommand extends BaseCommand {
 					$config['paths']['plugin_dir'],
 					$config['paths']['plugin_dir'] . 'languages/' . $config['plugin_folder_name'] . '.pot',
 				),
+				$config['paths']['plugin_dir'],
+				null,
+				null,
+				Helper::get_process_timeout( 'make-pot' )
 			),
 		);
 

@@ -60,6 +60,8 @@ class PhpcbfVendorPrefixedCommand extends BaseCommand {
 				array(
 					'AFL_BOB_FORCE_EXIT_0' => true,
 				),
+				null,
+				Helper::get_process_timeout( 'lint' )
 			),
 		);
 

@@ -58,11 +58,11 @@ class InstallWpcliCommand extends BaseCommand {
 		}
 
 		$commands = array(
-			new Process( array( 'curl', '-L', 'https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar', '-o', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar' ) ),
-			new Process( array( 'curl', '-L', 'https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar.asc', '-o', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar.asc' ) ),
-			new Process( array( 'curl', '-L', 'https://raw.githubusercontent.com/wp-cli/builds/gh-pages/wp-cli.pgp', '-o', $config['paths']['plugin_bin_dir'] . 'wp-cli.pgp' ) ),
-			new Process( array( 'gpg', '--import', $config['paths']['plugin_bin_dir'] . 'wp-cli.pgp' ) ),
-			new Process( array( 'gpg', '--verify', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar.asc', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar' ) ),
+			new Process( array( 'curl', '-L', 'https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar', '-o', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar' ), null, null, null, Helper::get_process_timeout( 'install' ) ),
+			new Process( array( 'curl', '-L', 'https://github.com/wp-cli/wp-cli/releases/download/v2.12.0/wp-cli-2.12.0.phar.asc', '-o', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar.asc' ), null, null, null, Helper::get_process_timeout( 'install' ) ),
+			new Process( array( 'curl', '-L', 'https://raw.githubusercontent.com/wp-cli/builds/gh-pages/wp-cli.pgp', '-o', $config['paths']['plugin_bin_dir'] . 'wp-cli.pgp' ), null, null, null, Helper::get_process_timeout( 'install' ) ),
+			new Process( array( 'gpg', '--import', $config['paths']['plugin_bin_dir'] . 'wp-cli.pgp' ), null, null, null, Helper::get_process_timeout( 'default' ) ),
+			new Process( array( 'gpg', '--verify', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar.asc', $config['paths']['plugin_bin_dir'] . 'wp-cli.phar' ), null, null, null, Helper::get_process_timeout( 'default' ) ),
 		);
 
 		$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );

@@ -469,4 +469,33 @@ class Helper {
 
 		return self::getPluginHeaders( $config['paths']['plugin_file'] )['Version'] ?? null;
 	}
+
+	/**
+	 * Get process timeout duration based on key
+	 *
+	 * Returns the timeout duration in seconds for different types of processes.
+	 *
+	 * @param string $key Key to identify the type of process (e.g., 'default', 'scope').
+	 * @return int Timeout duration in seconds.
+	 */
+	public static function get_process_timeout( $key ) {
+
+		$config = self::getConfig();
+
+		if ( ! empty( $config['process_timeout'] ) && is_array( $config['process_timeout'] ) && isset( $config['process_timeout'][ $key ] ) ) {
+			return (int) $config['process_timeout'][ $key ];
+		}
+
+		// Default timeout if not specified in config.
+		$default_timeouts = array(
+			'default'    => 120, // 2 minutes.
+			'install'    => 300, // 5 minutes (for composer install or wp-cli install).
+			'lint'       => 300, // 5 minutes (scanning can take longer).
+			'php-scoper' => 900, // 15 minutes (scoping can take longer).
+			'make-pot'   => 300, // 5 minutes (generating POT file can take longer).
+			'zip'        => 300, // 5 minutes (zipping files can take longer).
+		);
+
+		return $default_timeouts[ $key ] ?? $default_timeouts['default'];
+	}
 }

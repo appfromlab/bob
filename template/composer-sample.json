@@ -8,6 +8,9 @@
                 "exclude_namespaces": [
                     "MyVendorName\\AFL_Plugin_Boilerplate"
                 ]
+            },
+            "process_timeout": {
+                "install" : 600
             }
         }
     },

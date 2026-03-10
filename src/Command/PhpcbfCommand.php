@@ -61,6 +61,8 @@ class PhpcbfCommand extends BaseCommand {
 				array(
 					'AFL_BOB_EXIT_0' => true,
 				),
+				null,
+				Helper::get_process_timeout( 'lint' )
 			),
 		);
 

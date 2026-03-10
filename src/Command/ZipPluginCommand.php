@@ -65,7 +65,10 @@ class ZipPluginCommand extends BaseCommand {
 					$plugin_zip_name,
 					$plugin_dir_name . '/', // Trailing slash to ensure contents are zipped with the plugin folder as the root, not the full path.
 				),
-				$config['paths']['plugin_distribution_dir']
+				$config['paths']['plugin_distribution_dir'],
+				null,
+				null,
+				Helper::get_process_timeout( 'zip' )
 			),
 			new ArrayInput( array( 'command' => 'afl:bob:dist-clean' ) ),
 		);

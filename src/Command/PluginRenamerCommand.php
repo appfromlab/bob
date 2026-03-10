@@ -258,6 +258,9 @@ class PluginRenamerCommand extends BaseCommand {
 					'install',
 				),
 				$config['paths']['plugin_dir'],
+				null,
+				null,
+				Helper::get_process_timeout( 'install' ),
 			),
 			new Process(
 				// we need to populate back the vendor/bin folder with the dev tools.
@@ -268,15 +271,11 @@ class PluginRenamerCommand extends BaseCommand {
 					'install',
 				),
 				$config['paths']['plugin_dir'],
+				null,
+				null,
+				Helper::get_process_timeout( 'install' ),
 			),
-			new Process(
-				// build the plugin after renaming.
-				array(
-					'composer',
-					'build',
-				),
-				$config['paths']['plugin_dir'],
-			),
+			new ArrayInput( array( 'command' => 'afl:bob:build' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:readme-generator' ) ),
 			new ArrayInput( array( 'command' => 'afl:bob:make-pot' ) ),
 		);

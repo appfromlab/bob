@@ -96,11 +96,16 @@ class LintCommand extends BaseCommand {
 			new Process(
 				$phpcbf_args,
 				$config['paths']['plugin_dir'],
-				array( 'AFL_BOB_FORCE_EXIT_0' => true )
+				array( 'AFL_BOB_FORCE_EXIT_0' => true ),
+				null,
+				Helper::get_process_timeout( 'lint' )
 			),
 			new Process(
 				$phpcs_args,
-				$config['paths']['plugin_dir']
+				$config['paths']['plugin_dir'],
+				null,
+				null,
+				Helper::get_process_timeout( 'lint' )
 			),
 		);
 
