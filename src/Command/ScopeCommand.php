@@ -189,7 +189,7 @@ class ScopeCommand extends BaseCommand {
 			);
 
 			$exit_code = BatchCommands::run( $this->getApplication(), $commands, $output );
-		} catch (\RuntimeException $th) {
+		} catch ( \RuntimeException $th ) {
 
 			$exit_code = $th->getCode();
 			$output->writeln( '<error>FAILED:</error> ' . $th->getMessage() );

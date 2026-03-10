@@ -99,6 +99,8 @@ class Helper {
 				'plugin_scoper_stage_2_config_file' => $plugin_dir . '.scoper.2.php',
 				'plugin_distribution_dir'           => dirname( $plugin_dir ) . DIRECTORY_SEPARATOR . '.afl-dist' . DIRECTORY_SEPARATOR,
 				'plugin_distribution_ignore_file'   => $plugin_dir . '.distignore',
+				'plugin_boilerplate_pot_file'       => $plugin_dir . 'languages' . DIRECTORY_SEPARATOR . 'afl-plugin-boilerplate.pot',
+				'plugin_boilerplate_main_file'      => $plugin_dir . 'afl-plugin-boilerplate.php',
 			);
 		}
 
