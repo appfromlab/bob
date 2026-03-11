@@ -249,6 +249,8 @@ class PluginRenamerCommand extends BaseCommand {
 				array(
 					'composer',
 					'install',
+					'--prefer-dist',
+					'--no-interaction',
 				),
 				$config['paths']['plugin_dir'],
 				null,
@@ -262,6 +264,8 @@ class PluginRenamerCommand extends BaseCommand {
 					'bin',
 					'all',
 					'install',
+					'--prefer-dist',
+					'--no-interaction',
 				),
 				$config['paths']['plugin_dir'],
 				null,

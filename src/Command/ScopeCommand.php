@@ -113,6 +113,7 @@ class ScopeCommand extends BaseCommand {
 						'install',
 						'--no-dev',
 						'--prefer-dist',
+						'--no-interaction',
 					),
 					// set current working directory.
 					$config['paths']['plugin_dir'],
@@ -167,6 +168,8 @@ class ScopeCommand extends BaseCommand {
 					array(
 						'composer',
 						'install',
+						'--prefer-dist',
+						'--no-interaction',
 					),
 					// set current working directory.
 					$config['paths']['plugin_dir'],
@@ -218,6 +221,8 @@ class ScopeCommand extends BaseCommand {
 					array(
 						'composer',
 						'install',
+						'--prefer-dist',
+						'--no-interaction',
 					),
 					// set current working directory.
 					$config['paths']['plugin_dir'],
