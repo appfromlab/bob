@@ -211,13 +211,6 @@ class PluginRenamerCommand extends BaseCommand {
 			$output->writeln( '<warning>WARNING: Failed to delete afl-plugin-boilerplate.pot file.</warning>' );
 		}
 
-		// delete composer.lock file.
-		if ( Helper::safeToDelete( $config['paths']['plugin_composer_lock_file'], 'composer.lock', $config['paths']['plugin_dir'] ) ) {
-			$output->writeln( 'Deleted composer.lock file...' );
-		} else {
-			$output->writeln( '<warning>WARNING: Failed to delete composer.lock file.</warning>' );
-		}
-
 		// delete vendor folder.
 		if ( Helper::safeToDelete( $config['paths']['plugin_vendor_dir'], 'vendor', $config['paths']['plugin_dir'] ) ) {
 			$output->writeln( 'Deleted vendor folder...' );
