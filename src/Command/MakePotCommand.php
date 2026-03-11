@@ -69,7 +69,7 @@ class MakePotCommand extends BaseCommand {
 
 			$commands = array(
 				new ArrayInput(
-					array( 'command' => 'afl:bob:install-wp-cli' )
+					array( 'command' => 'afl:bob:install-wpcli' )
 				),
 			);
 
