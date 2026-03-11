@@ -242,7 +242,7 @@ class PluginRenamerCommand extends BaseCommand {
 		if ( rename( $boilerplate_plugin_file_path, $new_plugin_file_path ) ) {
 			$output->writeln( "Main plugin file was renamed to {$new_plugin_file_name}" );
 		} else {
-			$output->writeln( '<error>ERROR: Failed to rename main plugin file.</error>' );
+			$output->writeln( "<error>ERROR: Failed to rename main plugin file to {$new_plugin_file_name}.</error>" );
 			return 1;
 		}
 

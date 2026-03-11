@@ -145,12 +145,6 @@ class Helper {
 		// Generate path to main plugin file.
 		$config['paths']['plugin_file'] = $config['paths']['plugin_dir'] . $config['plugin_folder_name'] . '.php';
 
-		// Check if main plugin file exists.
-		if ( ! file_exists( $config['paths']['plugin_file'] ) ) {
-			echo "ERROR: Main plugin file not found: {$config['paths']['plugin_file']}\n";
-			exit( 1 );
-		}
-
 		// Setup additional paths that depend on plugin_folder_name.
 		$config['paths']['plugin_scoper_build_dir'] = $config['paths']['plugin_scoper_build_dir'] . $config['plugin_folder_name'] . DIRECTORY_SEPARATOR;
 		$config['paths']['plugin_distribution_dir'] = $config['paths']['plugin_distribution_dir'] . $config['plugin_folder_name'] . DIRECTORY_SEPARATOR;
