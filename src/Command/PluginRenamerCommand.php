@@ -225,6 +225,9 @@ class PluginRenamerCommand extends BaseCommand {
 			$output->writeln( '<warning>WARNING: Failed to delete vendor-prefixed folder.</warning>' );
 		}
 
+		// Refresh config after rename.
+		$config = Helper::getConfig();
+
 		// finally rename main plugin file.
 		$boilerplate_plugin_file_path = $config['paths']['plugin_boilerplate_main_file'];
 
