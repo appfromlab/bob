@@ -226,10 +226,10 @@ class PluginRenamerCommand extends BaseCommand {
 		}
 
 		// finally rename main plugin file.
-		$new_plugin_file_name = basename( $config['paths']['plugin_dir'] );
-
 		$boilerplate_plugin_file_path = $config['paths']['plugin_boilerplate_main_file'];
-		$new_plugin_file_path         = $config['paths']['plugin_dir'] . $new_plugin_file_name . '.php';
+
+		$new_plugin_file_path = $config['paths']['plugin_file'];
+		$new_plugin_file_name = basename( $new_plugin_file_path );
 
 		if ( ! file_exists( $boilerplate_plugin_file_path ) ) {
 			$output->writeln( '<error>ERROR: Cannot find default main plugin file afl-plugin-boilerplate.php</error>' );
@@ -237,7 +237,7 @@ class PluginRenamerCommand extends BaseCommand {
 		}
 
 		if ( rename( $boilerplate_plugin_file_path, $new_plugin_file_path ) ) {
-			$output->writeln( "Main plugin file was renamed to {$new_plugin_file_name}.php" );
+			$output->writeln( "Main plugin file was renamed to {$new_plugin_file_name}" );
 		} else {
 			$output->writeln( '<error>ERROR: Failed to rename main plugin file.</error>' );
 			return 1;
