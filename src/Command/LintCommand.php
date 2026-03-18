@@ -3,7 +3,7 @@
  * Lint Command
  *
  * Formats PHP files with PHPCBF then checks them with PHPCS before commit.
- * Only processes changed PHP files to optimize performance.
+ * Processes unstaged changes, staged changes, and untracked PHP files.
  *
  * @package Appfromlab\Bob\Command
  */
@@ -33,7 +33,7 @@ class LintCommand extends BaseCommand {
 	 */
 	protected function configure(): void {
 		$this->setName( 'afl:bob:lint' )
-			->setDescription( 'Format and check PHP files with PHPCBF and PHPCS before commit. Only processes changed PHP files to optimize performance.' );
+			->setDescription( 'Format and check PHP files with PHPCBF and PHPCS before commit. Processes unstaged changes, staged changes, and untracked PHP files.' );
 	}
 
 	/**
@@ -121,8 +121,9 @@ class LintCommand extends BaseCommand {
 	/**
 	 * Get list of PHP files
 	 *
-	 * Retrieves all PHP files except deleted ones, supporting
-	 * Linux, macOS and Windows (PowerShell).
+	 * Retrieves all PHP files that should be linted before commit: unstaged
+	 * changes to tracked files, staged changes, and untracked files.
+	 * Deleted files are excluded. Supports Linux, macOS and Windows (PowerShell).
 	 *
 	 * @param string          $working_dir The working directory to run git from.
 	 * @param InputInterface  $input       The input interface.
@@ -131,29 +132,38 @@ class LintCommand extends BaseCommand {
 	 */
 	private function getPhpFiles( string $working_dir, InputInterface $input, OutputInterface $output ): array {
 
-		$process = new Process(
+		$git_commands = array(
+			// Unstaged changes to tracked files.
 			array( 'git', 'diff', '--name-only', '--diff-filter=d' ),
-			$working_dir
+			// Staged changes (files added with git add).
+			array( 'git', 'diff', '--cached', '--name-only', '--diff-filter=d' ),
+			// Untracked files not covered by .gitignore.
+			array( 'git', 'ls-files', '--others', '--exclude-standard' ),
 		);
 
-		$process->run();
+		$raw_files = array();
 
-		if ( ! $process->isSuccessful() ) {
-			$output->writeln( '<error>Failed to get files: ' . $process->getErrorOutput() . '</error>' );
-			return array();
-		}
+		foreach ( $git_commands as $cmd ) {
+			$process = new Process( $cmd, $working_dir );
+			$process->run();
 
-		$raw = trim( $process->getOutput() );
+			if ( ! $process->isSuccessful() ) {
+				$output->writeln( '<error>Failed to get files: ' . $process->getErrorOutput() . '</error>' );
+				return array();
+			}
 
-		if ( empty( $raw ) ) {
-			return array();
+			$raw = trim( $process->getOutput() );
+
+			if ( ! empty( $raw ) ) {
+				foreach ( explode( "\n", $raw ) as $file ) {
+					$raw_files[] = trim( $file );
+				}
+			}
 		}
 
 		$php_files = array();
 
-		foreach ( explode( "\n", $raw ) as $file ) {
-			$file = trim( $file );
-
+		foreach ( array_unique( $raw_files ) as $file ) {
 			if ( ! empty( $file ) && pathinfo( $file, PATHINFO_EXTENSION ) === 'php' ) {
 				$php_files[] = $working_dir . $file;
 			}
